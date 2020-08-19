@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: tpc-test
+  namespace: osg-services
+  labels:
+    k8s-app: tpc-test
+spec:
+  selector:
+    matchLabels:
+      k8s-app: tpc-test
+  template:
+    metadata:
+      labels:
+        k8s-app: tpc-test
+    spec:
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      containers:
+      - env:
+        - name: XRDHTTPPORT
+          value: "8080"
+        - name: SITENAME
+          value: EdgarSite
+        image: aaarora/xrootd-tpc-http:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          hostPort: 8080
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
+        name: tpc-test
+        resources:
+          limits:
+            cpu: "6" 
+            memory: 10Gi
+            ephemeral-storage: 40Gi
+          requests:
+            cpu: "4"
+            memory: 8Gi
+            ephemeral-storage: 30Gi
+        volumeMounts:
+        - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
+          name: xrootd-tpc-conf
+          subPath: xrootd-third-party-copy.cfg
+        - mountPath: /mnt/ramdisk/
+          name: cache-vol
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        nautilus.io/network: '100000'
+        nautilus.io/disktype: nvme
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: xrootd-tpc-conf
+        configMap: 
+          name: xrootd-tpc-conf
+      - name: cache-vol
+        emptyDir: {}
+#          medium: Memory
+#          sizeLimit: 25Gi

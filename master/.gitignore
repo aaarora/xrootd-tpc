@@ -1,0 +1,3 @@
+/transferScripts/*.json
+*.sh
+/junk/*

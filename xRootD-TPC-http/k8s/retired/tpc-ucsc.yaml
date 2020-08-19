@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: tpc-ucsc
+  name: tpc-ucsc
+  namespace: osg-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: tpc-ucsc
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: tpc-ucsc
+    spec:
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      containers:
+      - env:
+        - name: XRDHTTPPORT
+          value: "8080"
+        - name: SITENAME
+          value: EdgarSite
+        image: aaarora/xrootd-tpc-http:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          hostPort: 8080
+        - containerPort: 1024
+          hostPort: 1024
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
+        name: tpc-ucsc
+        resources:
+          limits:
+            cpu: 3
+            memory: 30Gi
+          requests:
+            cpu: 2
+            memory: 20Gi
+        volumeMounts:
+        - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
+          name: xrootd-tpc-conf
+          subPath: xrootd-third-party-copy.cfg
+        - mountPath: /mnt/ramdisk/
+          name: cache-vol
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/hostname: siderea.ucsc.edu
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: xrootd-tpc-conf
+        configMap: 
+          name: xrootd-tpc-conf
+      - name: cache-vol
+        emptyDir: {}
