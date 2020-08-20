@@ -20,9 +20,9 @@ for source, destJson in data.items():
     for dest, rate in destJson.items():
         payload = {
             "subject-type": "point-to-point",
-            "source": "10.1.1.1",
-            "destination": "10.1.1.2",
-            "tool-name": "pscheduler/iperf3",
+            "source": "1.1.1.1",
+            "destination": "1.1.1.2",
+            "tool-name": "xrootd-tpc",
             "measurement-agent": "1.1.1.1",
             "input-source": source,
             "input-destination": dest,
