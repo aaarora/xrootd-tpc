@@ -69,17 +69,16 @@ def main():
     with open(conf) as f:
 	    conf = json.load(f)
     f.close()
-
+    
     for (sourceName, sourceIP) in conf.items():
         for (destName, destIP) in conf.items():
             if sourceName is not destName:
-                #rate = doTransfer(sourceIP, destIP, 1)
-                rate = 1
-                rateDict.update({sourceName : {destName : rate}})
+                rate = doTransfer(sourceIP, destIP, 1)
+                rateDict.update({"{0}:{1}".format(sourceName,destName) : rate})
 
     with open('rates.json','w') as out:
         json.dump(rateDict,out)
-        out.close()
+    out.close()
             
 if __name__ == '__main__':
     main()
