@@ -36,10 +36,10 @@ spec:
         name: master
         resources:
           limits:
-            cpu: 8
+            cpu: 4
             memory: 10Gi
           requests:
-            cpu: 4
+            cpu: 2
             memory: 5Gi
         volumeMounts:
         - mountPath: /home/
@@ -47,9 +47,19 @@ spec:
         - mountPath: /home/conf.json
           name: transfer-script
           subPath: conf.json
+          readOnly: false
         - mountPath: /home/calcTransferRate.py
           name: transfer-script
           subPath: calcTransferRate.py 
+          readOnly: false 
+        - mountPath: /home/maddash_conf.json
+          name: transfer-script
+          subPath: maddash_conf.json 
+          readOnly: false
+        - mountPath: /home/send_to_maddash.py
+          name: transfer-script
+          subPath: send_to_maddash.py
+          readOnly: false 
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -65,4 +75,8 @@ spec:
             path: conf.json
           - key: calcTransferRate.py
             path: calcTransferRate.py
+          - key: maddash_conf.json
+            path: maddash_conf.json
+          - key: send_to_maddash.py
+            path: send_to_maddash.py
           defaultMode: 0777

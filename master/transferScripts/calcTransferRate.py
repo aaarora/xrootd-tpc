@@ -72,9 +72,7 @@ def main():
 
     for (sourceName, sourceIP) in conf.items():
         for (destName, destIP) in conf.items():
-            if sourceName == destName:
-                continue
-            else:
+            if sourceName is not destName:
                 #rate = doTransfer(sourceIP, destIP, 1)
                 rate = 1
                 rateDict.update({sourceName : {destName : rate}})
