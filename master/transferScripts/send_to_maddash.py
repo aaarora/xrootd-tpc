@@ -4,7 +4,7 @@ import requests
 import json
 import time
 
-with open('maddash_conf.json') as maddash_conf:
+with open('/home/maddash_conf.json') as maddash_conf:
     conf = json.load(maddash_conf)
 maddash_conf.close()
 
@@ -12,7 +12,7 @@ url = conf['url']
 key = conf['key']
 headers = conf['headers']
 
-with open('rates.json') as f:
+with open('/home/rates.json') as f:
     data = json.load(f)
 f.close()
 

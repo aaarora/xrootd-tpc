@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import os
-import argparse
 import json
 import socket
 
@@ -16,7 +15,7 @@ def calcRate(n):
     total = 0
     rate = 0
     count = 0
-    f = open("scriptFile.txt", "r")
+    f = open("/home/scriptFile.txt", "r")
     for line in f:
         if "Stripe Bytes Transferred" in line:
             arr.append(trunStr(line.split(":")[1]))
@@ -38,7 +37,7 @@ def doTransfer(source, destination, numTransfers):
     s_source = socket.socket()
     s_dest = socket.socket()
     
-    command = "curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: {0}/testSourceFile\" {1}/testDestinationFile >> scriptFile.txt".format(source, destination)
+    command = "curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: {0}/testSourceFile\" {1}/testDestinationFile > /home/scriptFile.txt".format(source, destination)
 
     address_source = source.split(':')[0]
     port_source = int(source.split(':')[1])
@@ -52,7 +51,7 @@ def doTransfer(source, destination, numTransfers):
             os.system("sleep 3")
             os.system(command)
         rate = calcRate(numTransfers)
-        os.system("rm scriptFile.txt")
+        os.system("rm /home/scriptFile.txt")
     except Exception as e: 
         s_source.close()
         s_dest.close()
@@ -64,7 +63,7 @@ def doTransfer(source, destination, numTransfers):
     return rate
 
 def main():
-    conf = "./conf.json"
+    conf = "/home/conf.json"
     rateDict = dict()
     with open(conf) as f:
 	    conf = json.load(f)
@@ -76,7 +75,7 @@ def main():
                 rate = doTransfer(sourceIP, destIP, 1)
                 rateDict.update({"{0}:{1}".format(sourceName,destName) : rate})
 
-    with open('rates.json','w') as out:
+    with open('/home/rates.json','w') as out:
         json.dump(rateDict,out)
     out.close()
             
