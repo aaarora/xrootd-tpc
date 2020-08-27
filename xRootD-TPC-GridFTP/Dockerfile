@@ -7,8 +7,10 @@ RUN yum -y install vim && \
     
 RUN adduser tpcuser
 
-RUN mkdir -p /var/run/sshd /var/log/supervisor
+RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisord.conf
 ADD gridftp.conf /etc/gridftp.conf
-EXPOSE 2811 8888
+
+EXPOSE 2811 50000-51000
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

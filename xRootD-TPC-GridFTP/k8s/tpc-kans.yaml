@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: tpc-ucsd
-  name: tpc-ucsd
+    k8s-app: tpc-kans
+  name: tpc-kans
   namespace: osg-services
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: tpc-ucsd
+      k8s-app: tpc-kans
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -19,7 +19,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        k8s-app: tpc-ucsd
+        k8s-app: tpc-kans
     spec:
       tolerations:
       - effect: NoSchedule
@@ -60,7 +60,7 @@ spec:
           name: cache-vol
       dnsPolicy: ClusterFirst
       nodeSelector:
-        kubernetes.io/hostname: stashcache.t2.ucsd.edu
+        kubernetes.io/hostname: osg.newy32aoa.nrp.internet2.edu
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
