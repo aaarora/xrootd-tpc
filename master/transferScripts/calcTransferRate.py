@@ -23,7 +23,7 @@ def calcRate(n):
             arr.append("-")
     for i in range(len(arr)-1):
         if(arr[i] != '-' and arr[i+1] != '-'):
-            rate += (float(arr[i+1])-float(arr[i])) / 1073741824.0 * 8.0 / 5.0
+            rate += (float(arr[i+1])-float(arr[i])) * 8.0 / 5.0
             count += 1
         if(arr[i+1] == '-'):
             total += (rate/count)
