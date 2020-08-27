@@ -23,8 +23,8 @@ for hosts, rate in data.items():
         "destination": "1.1.1.2",
         "tool-name": "xrootd-tpc",
         "measurement-agent": "1.1.1.1",
-        "input-source": hosts.split(':')[0],
-        "input-destination": hosts.split(':')[1],
+        "input-source": hosts.split(':')[0]+".xrootd-tpc",
+        "input-destination": hosts.split(':')[1]+".xrootd-tpc",
         "event-types": [{"event-type": "throughput","summaries":[{"summary-type": "aggregation","summary-window": 3600},{"summary-type": "aggregation","summary-window": 86400}]}]
     }
 
