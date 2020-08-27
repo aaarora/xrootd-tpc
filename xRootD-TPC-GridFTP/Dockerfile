@@ -10,6 +10,7 @@ RUN adduser tpcuser
 RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisord.conf
 ADD gridftp.conf /etc/gridftp.conf
+ADD globus-gridftp-server /etc/sysconfig/globus-gridftp-server
 
 EXPOSE 2811 50000-51000
 
