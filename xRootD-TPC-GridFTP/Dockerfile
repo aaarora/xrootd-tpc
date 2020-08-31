@@ -13,7 +13,6 @@ ADD supervisord.conf /etc/supervisord.conf
 
 ADD grid-mapfile /etc/grid-security/grid-mapfile
 ADD gridftp.conf /etc/gridftp.conf
-ADD globus-gridftp-server /etc/sysconfig/globus-gridftp-server
 
 EXPOSE 2811 50000-51000
 
