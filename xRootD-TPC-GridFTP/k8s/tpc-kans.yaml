@@ -53,9 +53,6 @@ spec:
 #          name: hostkey
 #          readOnly: true
 #          subPath: hostkey.pem
-#        - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
-#          name: xrootd-tpc-conf
-#          subPath: xrootd-third-party-copy.cfg
         - mountPath: /mnt/ramdisk/
           name: cache-vol
       dnsPolicy: ClusterFirst
@@ -79,8 +76,5 @@ spec:
 #          - key: hostkey
 #            path: hostkey.pem
 #          defaultMode: 0600
-#     - name: xrootd-tpc-conf
-#        configMap: 
-#          name: xrootd-tpc-conf
       - name: cache-vol
         emptyDir: {}

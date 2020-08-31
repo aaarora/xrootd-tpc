@@ -45,17 +45,14 @@ spec:
             cpu: 4
             memory: 5Gi
         volumeMounts:
-        - mountPath: /etc/grid-security/clientCerts/hostcert.pem
+        - mountPath: /root/.globus/hostcert.pem
           name: certificate
           readOnly: true
           subPath: hostcert.pem
-        - mountPath: /etc/grid-security/clientCerts/hostkey.pem
+        - mountPath: /root/.globus/hostkey.pem
           name: hostkey
           readOnly: true
           subPath: hostkey.pem
-#        - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
-#          name: xrootd-tpc-conf
-#          subPath: xrootd-third-party-copy.cfg
         - mountPath: /mnt/ramdisk/
           name: cache-vol
       dnsPolicy: ClusterFirst
@@ -79,8 +76,5 @@ spec:
           - key: hostkey
             path: hostkey.pem
           defaultMode: 0600
-#     - name: xrootd-tpc-conf
-#        configMap: 
-#          name: xrootd-tpc-conf
       - name: cache-vol
         emptyDir: {}
