@@ -31,7 +31,7 @@ spec:
         image: aaarora/xrootd-tpc-gridftp:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8888
+        - containerPort: 50001
         lifecycle:
           postStart:
             exec:
@@ -45,14 +45,14 @@ spec:
             cpu: 4
             memory: 5Gi
         volumeMounts:
-#        - mountPath: /etc/grid-security/hostcert.pem
-#          name: certificate
-#          readOnly: true
-#          subPath: hostcert.pem
-#        - mountPath: /etc/grid-security/hostkey.pem
-#          name: hostkey
-#          readOnly: true
-#          subPath: hostkey.pem
+        - mountPath: /etc/grid-security/clientCerts/hostcert.pem
+          name: certificate
+          readOnly: true
+          subPath: hostcert.pem
+        - mountPath: /etc/grid-security/clientCerts/hostkey.pem
+          name: hostkey
+          readOnly: true
+          subPath: hostkey.pem
 #        - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
 #          name: xrootd-tpc-conf
 #          subPath: xrootd-third-party-copy.cfg
@@ -65,20 +65,20 @@ spec:
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
-#      - name: certificate
-#        secret:
-#          secretName: ucsd-certs
-#          items:
-#          - key: hostcert
-#            path: hostcert.pem
-#          defaultMode: 0600
-#      - name: hostkey
-#        secret:
-#          secretName: ucsd-certs
-#          items:
-#          - key: hostkey
-#            path: hostkey.pem
-#          defaultMode: 0600
+      - name: certificate
+        secret:
+          secretName: ucsd-certs
+          items:
+          - key: hostcert
+            path: hostcert.pem
+          defaultMode: 0600
+      - name: hostkey
+        secret:
+          secretName: ucsd-certs
+          items:
+          - key: hostkey
+            path: hostkey.pem
+          defaultMode: 0600
 #     - name: xrootd-tpc-conf
 #        configMap: 
 #          name: xrootd-tpc-conf
