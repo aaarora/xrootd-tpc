@@ -15,8 +15,6 @@ ADD grid-mapfile /etc/grid-security/grid-mapfile
 ADD gridftp.conf /etc/gridftp.conf
 ADD globus-gridftp-server /etc/sysconfig/globus-gridftp-server
 
-RUN mkdir /home/.globus/
-
 EXPOSE 2811 50000-51000
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
