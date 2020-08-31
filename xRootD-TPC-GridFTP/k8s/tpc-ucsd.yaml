@@ -45,14 +45,14 @@ spec:
             cpu: 4
             memory: 5Gi
         volumeMounts:
-        - mountPath: /root/.globus/hostcert.pem
-          name: certificate
-          readOnly: true
-          subPath: hostcert.pem
-        - mountPath: /root/.globus/hostkey.pem
-          name: hostkey
-          readOnly: true
-          subPath: hostkey.pem
+#        - mountPath: /root/.globus/hostcert.pem
+#          name: certificate
+#          readOnly: true
+#          subPath: hostcert.pem
+#        - mountPath: /root/.globus/hostkey.pem
+#          name: hostkey
+#          readOnly: true
+#          subPath: hostkey.pem
         - mountPath: /mnt/ramdisk/
           name: cache-vol
       dnsPolicy: ClusterFirst
