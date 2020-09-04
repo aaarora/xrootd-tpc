@@ -19,17 +19,18 @@ f.close()
 for hosts, rate in data.items():
     payload = {
         "subject-type": "point-to-point",
-        "source": "1.1.1.1",
-        "destination": "1.1.1.2",
+        "source": str(hosts.split('~')[1]),
+        "destination": str(hosts.split('~')[3]),
         "tool-name": "xrootd-tpc",
         "measurement-agent": "1.1.1.1",
-        "input-source": hosts.split(':')[0]+".xrootd-tpc",
-        "input-destination": hosts.split(':')[1]+".xrootd-tpc",
+        "input-source": hosts.split('~')[0],
+        "input-destination": hosts.split('~')[2],
         "event-types": [{"event-type": "throughput","summaries":[{"summary-type": "aggregation","summary-window": 3600},{"summary-type": "aggregation","summary-window": 86400}]}]
     }
 
     m = requests.post(url, data=json.dumps(payload), headers=headers)
 
+    print(m.text)
     returnJSON = m.json()
     metadataKey = returnJSON['metadata-key']
 

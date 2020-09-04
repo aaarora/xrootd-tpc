@@ -73,7 +73,7 @@ def main():
         for (destName, destIP) in conf.items():
             if sourceName is not destName:
                 rate = doTransfer(sourceIP, destIP, 1)
-                rateDict.update({"{0}:{1}".format(sourceName,destName) : rate})
+                rateDict.update({"{0}~{1}~{2}~{3}".format(sourceName,sourceIP,destName,destIP) : rate})
 
     with open('/home/rates.json','w') as out:
         json.dump(rateDict,out)
