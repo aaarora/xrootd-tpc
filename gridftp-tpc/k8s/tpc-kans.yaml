@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: tpc-master
-  name: tpc-master
+    k8s-app: tpc-kans
+  name: tpc-kans
   namespace: osg-services
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: tpc-master
+      k8s-app: tpc-kans
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -19,7 +19,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        k8s-app: tpc-master
+        k8s-app: tpc-kans
     spec:
       tolerations:
       - effect: NoSchedule
@@ -27,19 +27,23 @@ spec:
       containers:
       - env:
         - name: SITENAME
-          value: TPCUCSD
-        image: aaarora/xrootd-tpc-gridftp:latest
+          value: TPCKANS
+        image: aaarora/gridftp-tpc:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 2811
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
         name: tpc-ucsd
         resources:
           limits:
             cpu: 5
-            memory: 90Gi
+            memory: 30Gi
           requests:
             cpu: 4
-            memory: 80Gi
+            memory: 25Gi
         volumeMounts:
         - mountPath: /root/.globus/hostcert.pem
           name: certificate
@@ -51,13 +55,9 @@ spec:
           subPath: hostkey.pem
         - mountPath: /mnt/ramdisk/
           name: cache-vol
-        - mountPath: /mnt/ramdisk2/
-          name: cache-vol-2
-        - mountPath: /mnt/ramdisk3/
-          name: cache-vol-3
       dnsPolicy: ClusterFirst
       nodeSelector:
-        kubernetes.io/hostname: stashcache.t2.ucsd.edu
+        kubernetes.io/hostname: osg.chic.nrp.internet2.edu 
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
@@ -77,14 +77,4 @@ spec:
             path: hostkey.pem
           defaultMode: 0600
       - name: cache-vol
-        emptyDir:
-          medium: "Memory"
-          sizeLimit: 25Gi
-      - name: cache-vol-2
-        emptyDir:
-          medium: "Memory"
-          sizeLimit: 25Gi
-      - name: cache-vol-3
-        emptyDir:
-          medium: "Memory"
-          sizeLimit: 25Gi
+        emptyDir: {}

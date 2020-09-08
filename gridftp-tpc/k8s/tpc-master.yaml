@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: tpc-ucsd
-  name: tpc-ucsd
+    k8s-app: tpc-master
+  name: tpc-master
   namespace: osg-services
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: tpc-ucsd
+      k8s-app: tpc-master
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -19,7 +19,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        k8s-app: tpc-ucsd
+        k8s-app: tpc-master
     spec:
       tolerations:
       - effect: NoSchedule
@@ -28,22 +28,18 @@ spec:
       - env:
         - name: SITENAME
           value: TPCUCSD
-        image: aaarora/xrootd-tpc-gridftp:latest
+        image: aaarora/gridftp-tpc:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 2811
-        lifecycle:
-          postStart:
-            exec:
-              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
         name: tpc-ucsd
         resources:
           limits:
             cpu: 5
-            memory: 30Gi
+            memory: 90Gi
           requests:
             cpu: 4
-            memory: 25Gi
+            memory: 80Gi
         volumeMounts:
         - mountPath: /root/.globus/hostcert.pem
           name: certificate
@@ -55,6 +51,10 @@ spec:
           subPath: hostkey.pem
         - mountPath: /mnt/ramdisk/
           name: cache-vol
+        - mountPath: /mnt/ramdisk2/
+          name: cache-vol-2
+        - mountPath: /mnt/ramdisk3/
+          name: cache-vol-3
       dnsPolicy: ClusterFirst
       nodeSelector:
         kubernetes.io/hostname: stashcache.t2.ucsd.edu
@@ -77,4 +77,14 @@ spec:
             path: hostkey.pem
           defaultMode: 0600
       - name: cache-vol
-        emptyDir: {}
+        emptyDir:
+          medium: "Memory"
+          sizeLimit: 25Gi
+      - name: cache-vol-2
+        emptyDir:
+          medium: "Memory"
+          sizeLimit: 25Gi
+      - name: cache-vol-3
+        emptyDir:
+          medium: "Memory"
+          sizeLimit: 25Gi
