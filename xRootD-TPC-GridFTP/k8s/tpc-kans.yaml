@@ -35,15 +35,15 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=1"]       
+              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
         name: tpc-ucsd
         resources:
           limits:
             cpu: 5
-            memory: 10Gi
+            memory: 30Gi
           requests:
             cpu: 4
-            memory: 5Gi
+            memory: 25Gi
         volumeMounts:
         - mountPath: /root/.globus/hostcert.pem
           name: certificate

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Create DaemonSet
-kubectl create -f /home/aaarora/xRootD-TPC/xRootD-TPC-http/k8s/test.yaml;
+kubectl create -f /home/aaarora/xRootD-TPC/xRootD-TPC-http/k8s/tpc-xrootd.yaml;
 
 # Wait for ContainerCreating to Finish
 sleep 120;
@@ -13,4 +13,4 @@ kubectl exec $master -n osg-services /home/calcTransferRate.py;
 kubectl exec $master -n osg-services /home/send_to_maddash.py; 
 
 # Delete Daemonset after transfers complete.
-kubectl delete -f /home/aaarora/xRootD-TPC/xRootD-TPC-http/k8s/test.yaml;
+kubectl delete -f /home/aaarora/xRootD-TPC/xRootD-TPC-http/k8s/tpc-xrootd.yaml;

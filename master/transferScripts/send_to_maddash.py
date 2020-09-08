@@ -17,20 +17,20 @@ with open('/home/rates.json') as f:
 f.close()
 
 for hosts, rate in data.items():
+    host_str = hosts.split('~')
     payload = {
         "subject-type": "point-to-point",
-        "source": str(hosts.split('~')[1]),
-        "destination": str(hosts.split('~')[3]),
+        "source": host_str[1].split(':')[0],
+        "destination": host_str[3].split(':')[0],
         "tool-name": "xrootd-tpc",
         "measurement-agent": "1.1.1.1",
-        "input-source": hosts.split('~')[0],
-        "input-destination": hosts.split('~')[2],
+        "input-source": host_str[0],
+        "input-destination": host_str[2],
         "event-types": [{"event-type": "throughput","summaries":[{"summary-type": "aggregation","summary-window": 3600},{"summary-type": "aggregation","summary-window": 86400}]}]
     }
 
     m = requests.post(url, data=json.dumps(payload), headers=headers)
 
-    print(m.text)
     returnJSON = m.json()
     metadataKey = returnJSON['metadata-key']
 

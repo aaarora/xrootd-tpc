@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: tpc-test
+  name: tpc-xrootd
   namespace: osg-services
   labels:
-    k8s-app: tpc-test
+    k8s-app: tpc-xrootd
 spec:
   selector:
     matchLabels:
-      k8s-app: tpc-test
+      k8s-app: tpc-xrootd
   template:
     metadata:
       labels:
-        k8s-app: tpc-test
+        k8s-app: tpc-xrootd
     spec:
       tolerations:
       - effect: NoSchedule
@@ -32,7 +32,7 @@ spec:
           postStart:
             exec:
               command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
-        name: tpc-test
+        name: tpc-xrootd
         resources:
           limits:
             cpu: "6" 
