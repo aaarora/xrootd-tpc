@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: master
-  name: master
+    k8s-app: xrootd-tpc-master
+  name: xrootd-tpc-master
   namespace: osg-services
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: master
+      k8s-app: xrootd-tpc-master
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -19,7 +19,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        k8s-app: master
+        k8s-app: xrootd-tpc-master
     spec:
       tolerations:
       - effect: NoSchedule
@@ -30,7 +30,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        name: master
+        name: xrootd-tpc-master
         resources:
           limits:
             cpu: 4
@@ -42,19 +42,19 @@ spec:
         - mountPath: /home/
           name: cache-vol
         - mountPath: /home/conf.json
-          name: transfer-script
+          name: xrootd-transfer-script
           subPath: conf.json
           readOnly: false
         - mountPath: /home/calcTransferRate.py
-          name: transfer-script
+          name: xrootd-transfer-script
           subPath: calcTransferRate.py 
           readOnly: false 
         - mountPath: /home/maddash_conf.json
-          name: transfer-script
+          name: xrootd-transfer-script
           subPath: maddash_conf.json 
           readOnly: false
         - mountPath: /home/send_to_maddash.py
-          name: transfer-script
+          name: xrootd-transfer-script
           subPath: send_to_maddash.py
           readOnly: false 
       dnsPolicy: ClusterFirst
@@ -64,9 +64,9 @@ spec:
       volumes:
       - name: cache-vol
         emptyDir: {}
-      - name: transfer-script
+      - name: xrootd-transfer-script
         configMap: 
-          name: transfer-script
+          name: xrootd-transfer-script
           items:
           - key: conf.json
             path: conf.json

@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Create DaemonSet
-kubectl create -f /home/aaarora/xrootd-tpc/xrootd-tpc-http/k8s/tpc-xrootd.yaml;
+kubectl create -f /home/aaarora/xRootD-TPC/xrootd-tpc-http/k8s/tpc-xrootd.yaml;
 
 # Wait for ContainerCreating to Finish
 sleep 120;
 
-master=$(kubectl get pods -l k8s-app=xrootd-tpc-master -n osg-services -o jsonpath="{.items[0].metadata.name}")
+master=$(kubectl get pods -l k8s-app=master -n osg-services -o jsonpath="{.items[0].metadata.name}")
 
 # Run Transfer Scripts from within master (for TPC on internal IPs)
 kubectl exec $master -n osg-services /home/calcTransferRate.py;
 kubectl exec $master -n osg-services /home/send_to_maddash.py; 
 
 # Delete Daemonset after transfers complete.
-kubectl delete -f /home/aaarora/xrootd-tpc/xrootd-tpc-http/k8s/tpc-xrootd.yaml;
+kubectl delete -f /home/aaarora/xRootD-TPC/xrootd-tpc-http/k8s/tpc-xrootd.yaml;
