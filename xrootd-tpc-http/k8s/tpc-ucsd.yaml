@@ -34,57 +34,47 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        - containerPort: 1024
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1 count=100"]       
+              command: ["/bin/sh", "-c", "echo Done"]       
         name: tpc-ucsd
         resources:
           limits:
-            cpu: 3
-            memory: 2Gi
+            cpu: 6
+            memory: 50Gi
           requests:
-            cpu: 2
-            memory: 1Gi
+            cpu: 4
+            memory: 40Gi
         volumeMounts:
-#        - mountPath: /etc/grid-security/hostcert.pem
-#          name: certificate
-#          readOnly: true
-#          subPath: hostcert.pem
-#        - mountPath: /etc/grid-security/hostkey.pem
-#          name: hostkey
-#          readOnly: true
-#          subPath: hostkey.pem
         - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
           name: xrootd-tpc-conf
           subPath: xrootd-third-party-copy.cfg
         - mountPath: /mnt/ramdisk/
-          name: cache-vol
+          name: cache-vol-1
+        - mountPath: /mnt/ramdisk2/
+          name: cache-vol-2
+        - mountPath: /mnt/ramdisk3/
+          name: cache-vol-3
       dnsPolicy: ClusterFirst
       nodeSelector:
-        nautilus.io/network: '100000'
-        nautilus.io/disktype: nvme
+        kubernetes.io/hostname: stashcache.t2.ucsd.edu
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: certificate
-        secret:
-          secretName: ucsd-certs
-          items:
-          - key: hostcert
-            path: hostcert.pem
-          defaultMode: 0600
-      - name: hostkey
-        secret:
-          secretName: ucsd-certs
-          items:
-          - key: hostkey
-            path: hostkey.pem
-          defaultMode: 0600
       - name: xrootd-tpc-conf
         configMap: 
           name: xrootd-tpc-conf
-      - name: cache-vol
-        emptyDir: {}
+      - name: cache-vol-1
+        emptyDir: 
+          medium: Memory
+          sizeLimit: 80Gi 
+      - name: cache-vol-2
+        emptyDir: 
+          medium: Memory
+          sizeLimit: 1Gi 
+      - name: cache-vol-3
+        emptyDir: 
+          medium: Memory
+          sizeLimit: 1Gi 
