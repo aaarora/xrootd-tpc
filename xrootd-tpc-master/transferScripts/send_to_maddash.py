@@ -22,7 +22,7 @@ for hosts, rate in data.items():
         "subject-type": "point-to-point",
         "source": host_str[1].split(':')[0],
         "destination": host_str[3].split(':')[0],
-        "tool-name": "xrootd-tpc",
+        "tool-name": "task_xrootd_throughput",
         "measurement-agent": "1.1.1.1",
         "input-source": host_str[0],
         "input-destination": host_str[2],
