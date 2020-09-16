@@ -25,6 +25,10 @@ def doTransfer(source, destination, numTransfers):
 
     for i in range(numTransfers):
         command += 'wait $PID{0}\n'.format(i+1)
+    
+    deleteCommand = ''
+    for i in range(numTransfers):
+        deleteCommand += 'curl -X DELETE {0}//testDestinationFile{1}\n'.format(destination, i+1)
 
     address_source = source.split(':')[0]
     port_source = int(source.split(':')[1])
@@ -37,6 +41,7 @@ def doTransfer(source, destination, numTransfers):
         os.system('sleep 2')
         os.system(command)
         rate = calcRate(numTransfers)
+        os.system(deleteCommand)
         os.system("rm /home/scriptFile.txt")
     except Exception as e: 
         s_source.close()
