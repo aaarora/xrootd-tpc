@@ -3,41 +3,32 @@ import os
 import json
 import socket
 
-def trunStr(s):
-    if ' ' in s:
-        s = s.replace(' ','')
-    if '\n' in s:
-        s = s.replace('\n','')
-    return s
-
 def calcRate(n):
     arr = list()
-    total = 0
-    rate = 0
-    count = 0
     f = open("/home/scriptFile.txt", "r")
     for line in f:
-        if "Stripe Bytes Transferred" in line:
-            arr.append(trunStr(line.split(":")[1]))
-        if "success: Created" in line:
-            arr.append("-")
-    for i in range(len(arr)-1):
-        if(arr[i] != '-' and arr[i+1] != '-'):
-            rate += (float(arr[i+1])-float(arr[i])) * 8.0 / 5.0
-            count += 1
-        if(arr[i+1] == '-'):
-            total += (rate/count)
-            rate = 0
-            count = 0
+        if 'real' in line:
+            arr.append(float(line.split('\t')[1][2:7]))
     f.close()
-    return total/n
+    rate = 8589934592.0 * 1.0 * n * n / sum(arr)
+    return rate
 
 def doTransfer(source, destination, numTransfers):
 
     s_source = socket.socket()
     s_dest = socket.socket()
     
-    command = "curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: {0}/testSourceFile\" {1}/testDestinationFile > /home/scriptFile.txt".format(source, destination)
+    command = '{\n'
+    for i in range(numTransfers):
+        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: {0}/testSourceFile\" {1}/testDestinationFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
+    command += '} 2> /home/scriptFile.txt\n'
+
+    for i in range(numTransfers):
+        command += 'wait $PID{0}\n'.format(i+1)
+    
+    deleteCommand = ''
+    for i in range(numTransfers):
+        deleteCommand += 'curl -X DELETE {0}//testDestinationFile{1}\n'.format(destination, i+1)
 
     address_source = source.split(':')[0]
     port_source = int(source.split(':')[1])
@@ -46,11 +37,11 @@ def doTransfer(source, destination, numTransfers):
     rate = 0
     try:
         s_source.connect((address_source, port_source))
-        s_dest.connect((address_dest, port_dest))    
-        for i in range(numTransfers):
-            os.system("sleep 3")
-            os.system(command)
+        s_dest.connect((address_dest, port_dest))
+        os.system('sleep 2')
+        os.system(command)
         rate = calcRate(numTransfers)
+        os.system(deleteCommand)
         os.system("rm /home/scriptFile.txt")
     except Exception as e: 
         s_source.close()
@@ -72,8 +63,9 @@ def main():
     for (sourceName, sourceIP) in conf.items():
         for (destName, destIP) in conf.items():
             if sourceName is not destName:
-                rate = doTransfer(sourceIP, destIP, 1)
-                rateDict.update({"{0}~{1}~{2}~{3}".format(sourceName,sourceIP,destName,destIP) : rate})
+                rate = doTransfer(sourceIP, destIP, 6)
+                if rate is not 0:
+                    rateDict.update({"{0}~{1}~{2}~{3}".format(sourceName,sourceIP,destName,destIP) : rate})
 
     with open('/home/rates.json','w') as out:
         json.dump(rateDict,out)

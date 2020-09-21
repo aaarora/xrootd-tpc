@@ -1,7 +1,6 @@
 FROM opensciencegrid/software-base:fresh
 
 RUN yum -y install vim && \
-    yum -y install osg-ca-certs && \
     yum -y install osg-xrootd-standalone --enablerepo=osg-upcoming-development
 
 RUN adduser tpcuser

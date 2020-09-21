@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: master
-  name: master
+    k8s-app: gridftp-master
+  name: gridftp-master
   namespace: osg-services
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: master
+      k8s-app: gridftp-master
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -19,7 +19,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        k8s-app: master
+        k8s-app: gridftp-master
     spec:
       tolerations:
       - effect: NoSchedule
@@ -30,7 +30,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        name: master
+        name: gridftp-master
         resources:
           limits:
             cpu: 4

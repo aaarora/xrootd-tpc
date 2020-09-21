@@ -31,17 +31,17 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
+              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=1"]       
         name: tpc-xrootd
         resources:
           limits:
             cpu: "6" 
-            memory: 10Gi
-            ephemeral-storage: 40Gi
+            memory: 25Gi
+#            ephemeral-storage: 40Gi
           requests:
             cpu: "4"
-            memory: 8Gi
-            ephemeral-storage: 30Gi
+            memory: 20Gi
+#            ephemeral-storage: 30Gi
         volumeMounts:
         - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
           name: xrootd-tpc-conf
@@ -51,7 +51,7 @@ spec:
       dnsPolicy: ClusterFirst
       nodeSelector:
         nautilus.io/network: '100000'
-        nautilus.io/disktype: nvme
+#        nautilus.io/disktype: nvme
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
@@ -59,6 +59,6 @@ spec:
         configMap: 
           name: xrootd-tpc-conf
       - name: cache-vol
-        emptyDir: {}
-#          medium: Memory
-#          sizeLimit: 25Gi
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
