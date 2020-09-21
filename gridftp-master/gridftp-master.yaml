@@ -41,6 +41,14 @@ spec:
         volumeMounts:
         - mountPath: /home/
           name: cache-vol
+        - mountPath: /root/.globus/hostcert.pem
+          name: certificate
+          readOnly: true
+          subPath: hostcert.pem
+        - mountPath: /root/.globus/hostkey.pem
+          name: hostkey
+          readOnly: true
+          subPath: hostkey.pem
         - mountPath: /home/conf.json
           name: transfer-script
           subPath: conf.json
@@ -64,9 +72,23 @@ spec:
       volumes:
       - name: cache-vol
         emptyDir: {}
+      - name: certificate
+        secret:
+          secretName: ucsd-certs
+          items:
+          - key: hostcert
+            path: hostcert.pem
+          defaultMode: 0600
+      - name: hostkey
+        secret:
+          secretName: ucsd-certs
+          items:
+          - key: hostkey
+            path: hostkey.pem
+          defaultMode: 0600
       - name: transfer-script
         configMap: 
-          name: transfer-script
+          name: gridftp-transfer-script 
           items:
           - key: conf.json
             path: conf.json

@@ -12,6 +12,5 @@ RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisord.conf
 
 ADD grid-mapfile /etc/grid-security/grid-mapfile
-ADD gridftp.conf /etc/gridftp.conf
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

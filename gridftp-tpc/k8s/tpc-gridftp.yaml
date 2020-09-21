@@ -1,25 +1,18 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
-  labels:
-    k8s-app: tpc-ucsd
-  name: tpc-ucsd
+  name: tpc-gridftp
   namespace: osg-services
+  labels:
+    k8s-app: tpc-gridftp
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      k8s-app: tpc-ucsd
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: RollingUpdate
+      k8s-app: tpc-gridftp
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        k8s-app: tpc-ucsd
+        k8s-app: tpc-gridftp
     spec:
       tolerations:
       - effect: NoSchedule
@@ -27,24 +20,32 @@ spec:
       containers:
       - env:
         - name: SITENAME
-          value: TPCUCSD
+          value: TPC-GridFTP-PRPSite
         image: aaarora/gridftp-tpc:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 2811
+#          hostPort: 2811
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
-        name: tpc-ucsd
+              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=1"]       
+        name: tpc-gridftp
         resources:
           limits:
-            cpu: 5
-            memory: 30Gi
-          requests:
-            cpu: 4
+            cpu: "6" 
             memory: 25Gi
+#            ephemeral-storage: 40Gi
+          requests:
+            cpu: "4"
+            memory: 20Gi
+#            ephemeral-storage: 30Gi
         volumeMounts:
+        - mountPath: /etc/gridftp.conf
+          name: gridftp-tpc-conf
+          subPath: gridftp.conf
+        - mountPath: /mnt/ramdisk/
+          name: cache-vol
         - mountPath: /root/.globus/hostcert.pem
           name: certificate
           readOnly: true
@@ -53,15 +54,16 @@ spec:
           name: hostkey
           readOnly: true
           subPath: hostkey.pem
-        - mountPath: /mnt/ramdisk/
-          name: cache-vol
       dnsPolicy: ClusterFirst
       nodeSelector:
-        kubernetes.io/hostname: stashcache.t2.ucsd.edu
-      restartPolicy: Always
+        nautilus.io/network: '100000'
+#        nautilus.io/disktype: nvme
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
+      - name: gridftp-tpc-conf
+        configMap:
+          name: gridftp-tpc-conf
       - name: certificate
         secret:
           secretName: ucsd-certs
@@ -77,4 +79,6 @@ spec:
             path: hostkey.pem
           defaultMode: 0600
       - name: cache-vol
-        emptyDir: {}
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
