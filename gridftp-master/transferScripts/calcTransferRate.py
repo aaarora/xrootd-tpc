@@ -20,15 +20,16 @@ def doTransfer(source, destination, numTransfers):
     
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: {0}/testSourceFile\" {1}/testDestinationFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
+        command += 'time globus-url-copy -v -s \"/DC=org/DC=incommon/C=US/ST=California/L=La Jolla/O=University of California, San Diego/OU=UCSD/CN=stashcache.t2.ucsd.edu\" 
+        gsiftp://{0}/mnt/ramdisk/testSourceFile gsiftp://{1}/mnt/ramdisk/testDestFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):
         command += 'wait $PID{0}\n'.format(i+1)
     
-    deleteCommand = ''
-    for i in range(numTransfers):
-        deleteCommand += 'curl -X DELETE {0}//testDestinationFile{1}\n'.format(destination, i+1)
+#    deleteCommand = ''
+#    for i in range(numTransfers):
+#        deleteCommand += 'curl -X DELETE {0}//testDestinationFile{1}\n'.format(destination, i+1)
 
     address_source = source.split(':')[0]
     port_source = int(source.split(':')[1])
@@ -41,7 +42,7 @@ def doTransfer(source, destination, numTransfers):
         os.system('sleep 2')
         os.system(command)
         rate = calcRate(numTransfers)
-        os.system(deleteCommand)
+#        os.system(deleteCommand)
         os.system("rm /home/scriptFile.txt")
     except Exception as e: 
         s_source.close()
