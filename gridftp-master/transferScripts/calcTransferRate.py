@@ -20,8 +20,7 @@ def doTransfer(source, destination, numTransfers):
     
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time globus-url-copy -v -s \"/DC=org/DC=incommon/C=US/ST=California/L=La Jolla/O=University of California, San Diego/OU=UCSD/CN=stashcache.t2.ucsd.edu\" 
-        gsiftp://{0}/mnt/ramdisk/testSourceFile gsiftp://{1}/mnt/ramdisk/testDestFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
+        command += 'time globus-url-copy -v -s \"/DC=org/DC=incommon/C=US/ST=California/L=La Jolla/O=University of California, San Diego/OU=UCSD/CN=stashcache.t2.ucsd.edu\" gsiftp://{0}/mnt/ramdisk/testSourceFile gsiftp://{1}/mnt/ramdisk/testDestFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):
