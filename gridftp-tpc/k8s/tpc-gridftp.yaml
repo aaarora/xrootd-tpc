@@ -57,7 +57,7 @@ spec:
       dnsPolicy: ClusterFirst
       nodeSelector:
         nautilus.io/network: '100000'
-        nautilus.io/disktype: nvme
+#        nautilus.io/disktype: nvme
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
@@ -81,4 +81,4 @@ spec:
       - name: cache-vol
         emptyDir:
           medium: Memory
-          sizeLimit: 10Gi
+          sizeLimit: 15Gi

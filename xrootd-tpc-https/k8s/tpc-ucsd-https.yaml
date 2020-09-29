@@ -29,7 +29,7 @@ spec:
         - name: XRDHTTPPORT
           value: "8443"
         - name: SITENAME
-          value: EdgarSite
+          value: TestSite
         image: aaarora/xrootd-tpc-https:latest
         imagePullPolicy: Always
         ports:

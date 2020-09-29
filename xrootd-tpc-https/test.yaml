@@ -1,0 +1,25 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: test-issuer
+  namespace: osg-services
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: test-ca
+  namespace: osg-services
+spec:
+  secretName: test-ca-sec
+  duration: 87600h
+  renewBefore: 360h
+  subject:
+    organizationalUnits:
+    - test
+  commonName: Test CA
+  isCA: true
+  issuerRef:
+    name: test-issuer
+    kind: ClusterIssuer
