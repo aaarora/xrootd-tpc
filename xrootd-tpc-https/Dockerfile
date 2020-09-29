@@ -6,4 +6,4 @@ RUN yum -y install vim && \
 
 ADD image-config.d/* /etc/osg/image-config.d/
 
-ADD supervisord.conf /etc/supervisor.d/10-xrootd-https-test.conf
+ADD supervisord.conf /etc/supervisord.d/10-xrootd-https-test.conf
