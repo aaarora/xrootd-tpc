@@ -41,11 +41,11 @@ spec:
         name: tpc-ucsd-https
         resources:
           limits:
-            cpu: 20
-            memory: 50Gi
+            cpu: 6
+            memory: 30Gi
           requests:
-            cpu: 10
-            memory: 40Gi
+            cpu: 5
+            memory: 20Gi
         volumeMounts:
         - mountPath: /etc/grid-security/hostcert.pem
           name: certificate
@@ -56,7 +56,7 @@ spec:
           readOnly: true
           subPath: hostkey.pem
         - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
-          name: xrootd-tpc-conf-https
+          name: xrootd-tpc-https
           subPath: xrootd-third-party-copy.cfg
         - mountPath: /mnt/ramdisk/
           name: cache-vol
@@ -81,8 +81,8 @@ spec:
           - key: hostkey
             path: hostkey.pem
           defaultMode: 0600
-      - name: xrootd-tpc-conf-https
+      - name: xrootd-tpc-https
         configMap: 
-          name: xrootd-tpc-conf-https
+          name: xrootd-tpc-https
       - name: cache-vol
         emptyDir: {}
