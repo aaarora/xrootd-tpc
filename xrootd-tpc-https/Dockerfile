@@ -4,7 +4,6 @@ RUN yum -y install vim && \
 	yum -y install osg-ca-certs && \
 	yum -y install osg-xrootd-standalone --enablerepo=osg-upcoming-development
 
-ADD fetch-crl-kubernetes /etc/cron.d/fetch-crl-kubernetes
 ADD image-config.d/* /etc/osg/image-config.d/
 
 ADD supervisord.conf /etc/supervisor.d/10-xrootd-https-test.conf
