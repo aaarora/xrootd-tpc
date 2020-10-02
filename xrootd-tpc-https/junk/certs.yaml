@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: https-tpc-cert
+  namespace: osg-services
+spec:
+  secretName: https-tpc-certs
+  duration: 87600h # 10 years
+  renewBefore: 360h # 15d
+  isCA: true
+  dnsNames:
+  - stashcache.t2.ucsd.edu
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer

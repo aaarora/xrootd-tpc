@@ -26,6 +26,10 @@ spec:
         operator: Exists
       containers:
       - env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         - name: XRDHTTPPORT
           value: "8443"
         - name: SITENAME
@@ -37,7 +41,7 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=10"]       
+              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=1"]       
         name: tpc-ucsd-https
         resources:
           limits:
@@ -47,14 +51,21 @@ spec:
             cpu: 5
             memory: 20Gi
         volumeMounts:
-        - mountPath: /etc/grid-security/hostcert.pem
-          name: certificate
+        - mountPath: /etc/grid-security/certificates/OSG-Test-CA.pem
+          name: ca
           readOnly: true
-          subPath: hostcert.pem
-        - mountPath: /etc/grid-security/hostkey.pem
-          name: hostkey
-          readOnly: true
-          subPath: hostkey.pem
+          subPath: OSG-Test-CA.pem
+        - mountPath: /usr/lib/python2.7/site-packages/cagen.py
+          name: cagen
+          subPath: cagen.py
+#        - mountPath: /etc/grid-security/hostcert.pem
+#          name: certificate
+#          readOnly: true
+#          subPath: hostcert.pem
+#        - mountPath: /etc/grid-security/hostkey.pem
+#          name: hostkey
+#          readOnly: true
+#          subPath: hostkey.pem
         - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
           name: xrootd-tpc-https
           subPath: xrootd-third-party-copy.cfg
@@ -67,20 +78,34 @@ spec:
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: certificate
+      - name: ca
         secret:
-          secretName: ucsd-certs
+          secretName: https-self-certs
           items:
-          - key: hostcert
-            path: hostcert.pem
+          - key: OSG-Test-CA.pem
+            path: OSG-Test-CA.pem
           defaultMode: 0600
-      - name: hostkey
-        secret:
-          secretName: ucsd-certs
+      - name: cagen
+        secret: 
+          secretName: cagen-script-modified
           items:
-          - key: hostkey
-            path: hostkey.pem
-          defaultMode: 0600
+          - key: cagen.py
+            path: cagen.py
+          defaultMode: 0644
+#      - name: certificate
+#        secret:
+#          secretName: https-tpc-certs
+#          items:
+#          - key: tls.crt
+#            path: hostcert.pem
+#          defaultMode: 0600
+#      - name: hostkey
+#        secret:
+#          secretName: https-tpc-certs
+#          items:
+#          - key: tls.key
+#            path: hostkey.pem
+#          defaultMode: 0600
       - name: xrootd-tpc-https
         configMap: 
           name: xrootd-tpc-https
