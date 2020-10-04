@@ -39,8 +39,14 @@ spec:
             cpu: 2
             memory: 5Gi
         volumeMounts:
+        - mountPath: /usr/lib/python2.7/site-packages/cagen.py
+          name: cagen
+          subPath: cagen.py
         - mountPath: /home/
           name: cache-vol
+        - mountPath: /etc/pki/CA/private/OSG-Test-CA.pem
+          name: ca
+          subPath: OSG-Test-CA.pem
         - mountPath: /home/conf.json
           name: xrootd-transfer-script
           subPath: conf.json
@@ -62,6 +68,16 @@ spec:
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
+      - name: cagen
+        configMap: 
+          name: cagen-script-modified
+      - name: ca
+        secret:
+          secretName: https-self-certs
+          items:
+          - key: OSG-Test-CA.pem
+            path: OSG-Test-CA.pem
+          defaultMode: 0644
       - name: cache-vol
         emptyDir: {}
       - name: xrootd-transfer-script
