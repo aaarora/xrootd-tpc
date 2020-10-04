@@ -20,7 +20,7 @@ def doTransfer(source, destination, numTransfers):
     
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: https://{0}:8080/testSourceFile\" https://{1}:8080/testDestinationFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
+        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: http://{0}:8080/testSourceFile\" http://{1}:8080/testDestinationFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):
@@ -28,7 +28,7 @@ def doTransfer(source, destination, numTransfers):
     
     deleteCommand = ''
     for i in range(numTransfers):
-        deleteCommand += 'curl -k -X DELETE {0}//testDestinationFile{1}\n'.format(destination, i+1)
+        deleteCommand += 'curl -X DELETE http://{0}:8080/testDestinationFile{1} \n'.format(destination, i+1)
 
     rate = 0
     try:
