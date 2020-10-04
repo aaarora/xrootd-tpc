@@ -20,7 +20,7 @@ def doTransfer(source, destination, numTransfers):
     
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: {0}/testSourceFile\" {1}/testDestinationFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
+        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: https://{0}:8080/testSourceFile\" https://{1}:8080/testDestinationFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):
@@ -28,16 +28,12 @@ def doTransfer(source, destination, numTransfers):
     
     deleteCommand = ''
     for i in range(numTransfers):
-        deleteCommand += 'curl -X DELETE {0}//testDestinationFile{1}\n'.format(destination, i+1)
+        deleteCommand += 'curl -k -X DELETE {0}//testDestinationFile{1}\n'.format(destination, i+1)
 
-    address_source = source.split(':')[0]
-    port_source = int(source.split(':')[1])
-    address_dest = destination.split(':')[0]
-    port_dest = int(destination.split(':')[1])
     rate = 0
     try:
-        s_source.connect((address_source, port_source))
-        s_dest.connect((address_dest, port_dest))
+        s_source.connect((source, 8080))
+        s_dest.connect((destination, 8080))
         os.system('sleep 2')
         os.system(command)
         rate = calcRate(numTransfers)
@@ -63,7 +59,7 @@ def main():
     for (sourceName, sourceIP) in conf.items():
         for (destName, destIP) in conf.items():
             if sourceName is not destName:
-                rate = doTransfer(sourceIP, destIP, 11)
+                rate = doTransfer(sourceName, destName, 11)
                 if rate is not 0:
                     rateDict.update({"{0}~{1}~{2}~{3}".format(sourceName,sourceIP,destName,destIP) : rate})
 

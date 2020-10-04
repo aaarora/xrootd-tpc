@@ -61,4 +61,4 @@ spec:
       - name: cache-vol
         emptyDir:
           medium: Memory
-          sizeLimit: 15Gi
+          sizeLimit: 18Gi

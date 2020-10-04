@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: tpc-ucsd-https
+  name: tpc-ucsd-https
+  namespace: osg-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: tpc-ucsd-https
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: tpc-ucsd-https
+    spec:
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      containers:
+      - env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: XRDHTTPPORT
+          value: "9001"
+        - name: SITENAME
+          value: TestSite
+        image: aaarora/xrootd-tpc-https:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9001
+          hostPort: 9001
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "dd if=/dev/zero of=/mnt/ramdisk/testSourceFile bs=1G count=1"]       
+        name: tpc-ucsd-https
+        resources:
+          limits:
+            cpu: 6
+            memory: 30Gi
+          requests:
+            cpu: 5
+            memory: 20Gi
+        volumeMounts:
+        - mountPath: /etc/pki/CA/private/OSG-Test-CA.pem
+          name: ca
+          subPath: OSG-Test-CA.pem
+        - mountPath: /usr/lib/python2.7/site-packages/cagen.py
+          name: cagen
+          subPath: cagen.py
+        - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
+          name: xrootd-tpc-https
+          subPath: xrootd-third-party-copy.cfg
+        - mountPath: /mnt/ramdisk/
+          name: cache-vol
+#        - mountPath: /etc/grid-security/hostcert.pem
+#          name: certificate
+#          readOnly: true
+#          subPath: hostcert.pem
+#        - mountPath: /etc/grid-security/hostkey.pem
+#          name: hostkey
+#          readOnly: true
+#          subPath: hostkey.pem
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/hostname: stashcache.t2.ucsd.edu
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: ca
+        secret:
+          secretName: https-self-certs
+          items:
+          - key: OSG-Test-CA.pem
+            path: OSG-Test-CA.pem
+          defaultMode: 0644
+      - name: cagen
+        configMap: 
+          name: cagen-script-modified
+      - name: xrootd-tpc-https
+        configMap: 
+          name: xrootd-tpc-https
+      - name: cache-vol
+        emptyDir: {}
+#      - name: certificate
+#        secret:
+#          secretName: https-tpc-certs
+#          items:
+#          - key: tls.crt
+#            path: hostcert.pem
+#          defaultMode: 0600
+#      - name: hostkey
+#        secret:
+#          secretName: https-tpc-certs
+#          items:
+#          - key: tls.key
+#            path: hostkey.pem
+#          defaultMode: 0600

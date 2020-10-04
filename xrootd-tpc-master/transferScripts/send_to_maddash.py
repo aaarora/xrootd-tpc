@@ -20,10 +20,10 @@ for hosts, rate in data.items():
     host_str = hosts.split('~')
     payload = {
         "subject-type": "point-to-point",
-        "source": host_str[1].split(':')[0],
-        "destination": host_str[3].split(':')[0],
+        "source": host_str[1],
+        "destination": host_str[3],
         "tool-name": "xrootd-tpc",
-        "measurement-agent": host_str[1].split(':')[0],
+        "measurement-agent": host_str[1],
         "input-source": host_str[0],
         "input-destination": host_str[2],
         "event-types": [{"event-type": "throughput","summaries":[{"summary-type": "aggregation","summary-window": 3600},{"summary-type": "aggregation","summary-window": 86400}]}]

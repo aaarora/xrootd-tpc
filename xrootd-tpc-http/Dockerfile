@@ -5,5 +5,4 @@ RUN yum -y install vim && \
 
 RUN adduser tpcuser
 
-RUN mkdir -p /var/run/sshd /var/log/supervisor
 ADD supervisord.conf /etc/supervisord.conf
