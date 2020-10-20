@@ -2,8 +2,9 @@
 import os
 import json
 import socket
+import subprocess
 
-def calcRate(n):
+def calcRate():
     arr = list()
     f = open("/home/scriptFile.txt", "r")
     for line in f:
@@ -13,36 +14,40 @@ def calcRate(n):
     rate = 8589934592.0 * 1.0 * len(arr) * len(arr) / sum(arr)
     return rate
 
-def doTransfer(source, destination, numTransfers):
-
-    s_source = socket.socket()
-    s_dest = socket.socket()
-    
+def makeTransferScript(source, destination, numTransfers):
     command = '{\n'
     for i in range(numTransfers):
         command += 'time globus-url-copy -v -s \"/DC=org/DC=incommon/C=US/ST=California/L=La Jolla/O=University of California, San Diego/OU=UCSD/CN=stashcache.t2.ucsd.edu\" -p 10 gsiftp://{0}:2811/mnt/ramdisk/testSourceFile gsiftp://{1}:2811/mnt/ramdisk/testDestFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):
-        command += 'wait $PID{0}\n'.format(i+1)
-    
-#    deleteCommand = ''
-#    for i in range(numTransfers):
-#        deleteCommand += 'curl -X DELETE {0}//testDestinationFile{1}\n'.format(destination, i+1)
+        command += 'wait $PID{0}\n'.format(str(i+1))
+    f = open('transferScript.sh', 'w')
+    f.write(command)
+    f.close()
+
+def doTransfer(source, destination, numTransfers):
+
+    s_source = socket.socket()
+    s_dest = socket.socket()
+        
+    makeTransferScript(source, destination, numTransfers)
 
     rate = 0
     try:
         s_source.connect((source, 2811))
         s_dest.connect((destination, 2811))
         os.system('sleep 2')
-        os.system(command)
-        rate = calcRate(numTransfers)
-#        os.system(deleteCommand)
-        os.system("rm /home/scriptFile.txt")
     except Exception as e: 
         s_source.close()
         s_dest.close()
-        return 0
+        return 0 
+    p = subprocess.Popen(['bash','transferScript.sh'])
+    try:
+        p.wait(8)
+        rate = calcRate()
+    except subprocess.TimeoutExpired:
+        p.kill()
     finally:
         s_source.close()
         s_dest.close()
@@ -59,7 +64,7 @@ def main():
     for (sourceName, sourceIP) in conf.items():
         for (destName, destIP) in conf.items():
             if sourceName is not destName:
-                rate = doTransfer(sourceName, destName, 9)
+                rate = doTransfer(sourceName, destName, 11)
                 if rate is not 0:
                     rateDict.update({"{0}~{1}~{2}~{3}".format(sourceName,sourceIP,destName,destIP) : rate})
 
