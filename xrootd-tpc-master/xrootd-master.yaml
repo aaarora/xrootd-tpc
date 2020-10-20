@@ -53,7 +53,7 @@ spec:
           subPath: cagen.py
         - mountPath: /home/
           name: cache-vol
-        - mountPath: /etc/pki/CA/private/OSG-Test-CA.pem
+        - mountPath: /etc/pki/CA/private/OSG-Test-CA.key
           name: ca
           subPath: OSG-Test-CA.pem
         - mountPath: /home/conf.json
