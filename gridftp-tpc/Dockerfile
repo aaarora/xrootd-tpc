@@ -9,6 +9,8 @@ RUN yum -y install vim && \
     
 RUN adduser tpcuser
 
+ADD image-config.d/* /etc/osg/image-config.d/
+
 RUN mkdir -p /var/log/supervisor
 ADD supervisord.conf /etc/supervisord.d/10-gridftp.conf
 

@@ -4,7 +4,7 @@ conf:
 
 cagen-conf:
 	kubectl delete configmap cagen-script-modified -n osg-services
-	kubectl create configmap cagen-script-modified --from-file=cagen.py -n osg-services
+	kubectl create configmap cagen-script-modified --from-file=/home/aaarora/osg-ca-generator/lib/cagen.py -n osg-services
 
 ca-secret:
 	kubectl delete secret https-self-certs -n osg-services

@@ -17,36 +17,50 @@ def calcRate():
 def makeTransferScript(source, destination, numTransfers):
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time globus-url-copy -v -s \"/DC=org/DC=incommon/C=US/ST=California/L=La Jolla/O=University of California, San Diego/OU=UCSD/CN=stashcache.t2.ucsd.edu\" -p 8 gsiftp://{0}:9001/mnt/ramdisk/testSourceFile gsiftp://{1}:9001/mnt/ramdisk/testDestFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
+        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 1\" -H \"Source: http://{0}:8080/testSourceFile\" http://{1}:8080/testDestinationFile{2} --capath /etc/grid-security/certificates/ & PID{2}=$!\n'.format(source, destination,str(i+1))
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):
         command += 'wait $PID{0}\n'.format(str(i+1))
-    f = open('/home/transferScript.sh', 'w')
+    f = open('transferScript.sh', 'w')
     f.write(command)
+    f.close()
+
+def makeDeleteScript(destination, numTransfers):
+    deleteCommand = ''
+    for i in range(numTransfers):
+        deleteCommand += 'curl -X DELETE http://{0}:8080/testDestinationFile{1} --capath /etc/grid-security/certificates/ \n'.format(destination, i+1)
+    f = open('deleteScript.sh', 'w')
+    f.write(deleteCommand)
     f.close()
 
 def doTransfer(source, destination, numTransfers):
 
     s_source = socket.socket()
     s_dest = socket.socket()
-        
+
     makeTransferScript(source, destination, numTransfers)
+    makeDeleteScript(destination, numTransfers)
 
     rate = 0
     try:
-        s_source.connect((source, 9001))
-        s_dest.connect((destination, 9001))
+        s_source.connect((source, 8080))
+        s_dest.connect((destination, 8080))
         os.system('sleep 2')
     except Exception as e: 
         s_source.close()
         s_dest.close()
         return 0 
-    p = subprocess.Popen(['bash','/home/transferScript.sh'])
+    p = subprocess.Popen(['bash','transferScript.sh'])
     try:
         p.wait(8)
     except subprocess.TimeoutExpired:
         p.kill()
+    q = subprocess.Popen(['bash','deleteScript.sh'])
+    try:
+        q.wait(8)
+    except subprocess.TimeoutExpired:
+        q.kill()
     try: 
         rate = calcRate()
     except:

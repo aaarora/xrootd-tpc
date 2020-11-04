@@ -30,17 +30,32 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "osg-ca-generator --host"]       
+        env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         name: gridftp-master
         resources:
           limits:
             cpu: 4
-            memory: 10Gi
+            memory: 8Gi
           requests:
             cpu: 2
             memory: 5Gi
         volumeMounts:
+        - mountPath: /usr/lib/python2.7/site-packages/cagen.py
+          name: cagen
+          subPath: cagen.py
         - mountPath: /home/
           name: cache-vol
+        - mountPath: /etc/pki/CA/private/OSG-Test-CA.key
+          name: ca
+          subPath: OSG-Test-CA.pem
         - mountPath: /root/.globus/hostcert.pem
           name: certificate
           readOnly: true
@@ -67,25 +82,23 @@ spec:
           readOnly: false 
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+      nodeSelector:
+        kubernetes.io/hostname: stashcache.t2.ucsd.edu
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
+      - name: cagen
+        configMap: 
+          name: cagen-script-modified
+      - name: ca
+        secret:
+          secretName: https-self-certs
+          items:
+          - key: OSG-Test-CA.pem
+            path: OSG-Test-CA.pem
+          defaultMode: 0644
       - name: cache-vol
         emptyDir: {}
-      - name: certificate
-        secret:
-          secretName: ucsd-certs
-          items:
-          - key: hostcert
-            path: hostcert.pem
-          defaultMode: 0600
-      - name: hostkey
-        secret:
-          secretName: ucsd-certs
-          items:
-          - key: hostkey
-            path: hostkey.pem
-          defaultMode: 0600
       - name: transfer-script
         configMap: 
           name: gridftp-transfer-script 

@@ -19,13 +19,17 @@ spec:
         operator: Exists
       containers:
       - env:
+        - name: OSG_FQDN
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         - name: SITENAME
           value: TPC-GridFTP-PRPSite
         image: aaarora/gridftp-tpc:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 2811
-          hostPort: 2811
+        - containerPort: 9001
+          hostPort: 9001
         lifecycle:
           postStart:
             exec:
@@ -46,38 +50,31 @@ spec:
           subPath: gridftp.conf
         - mountPath: /mnt/ramdisk/
           name: cache-vol
-        - mountPath: /root/.globus/hostcert.pem
-          name: certificate
-          readOnly: true
-          subPath: hostcert.pem
-        - mountPath: /root/.globus/hostkey.pem
-          name: hostkey
-          readOnly: true
-          subPath: hostkey.pem
+        - mountPath: /etc/pki/CA/private/OSG-Test-CA.key
+          name: ca
+          subPath: OSG-Test-CA.pem
+        - mountPath: /usr/lib/python2.7/site-packages/cagen.py
+          name: cagen
+          subPath: cagen.py
       dnsPolicy: ClusterFirst
       nodeSelector:
         nautilus.io/network: '100000'
-#        nautilus.io/disktype: nvme
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 30
       volumes:
+      - name: ca
+        secret:
+          secretName: https-self-certs
+          items:
+          - key: OSG-Test-CA.pem
+            path: OSG-Test-CA.pem
+          defaultMode: 0644
+      - name: cagen
+        configMap: 
+          name: cagen-script-modified
       - name: gridftp-tpc-conf
         configMap:
           name: gridftp-tpc-conf
-      - name: certificate
-        secret:
-          secretName: ucsd-certs
-          items:
-          - key: hostcert
-            path: hostcert.pem
-          defaultMode: 0600
-      - name: hostkey
-        secret:
-          secretName: ucsd-certs
-          items:
-          - key: hostkey
-            path: hostkey.pem
-          defaultMode: 0600
       - name: cache-vol
         emptyDir:
           medium: Memory

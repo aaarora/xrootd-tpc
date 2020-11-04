@@ -19,7 +19,7 @@ spec:
         operator: Exists
       containers:
       - env:
-        - name: MY_NODE_NAME
+        - name: OSG_FQDN
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
@@ -45,7 +45,7 @@ spec:
             cpu: "4"
             memory: 20Gi
         volumeMounts:
-        - mountPath: /etc/pki/CA/private/OSG-Test-CA.pem
+        - mountPath: /etc/pki/CA/private/OSG-Test-CA.key
           name: ca
           subPath: OSG-Test-CA.pem
         - mountPath: /usr/lib/python2.7/site-packages/cagen.py

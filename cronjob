@@ -3,7 +3,7 @@
 ##XRootD
 
 # Create DaemonSet
-kubectl create -f /home/aaarora/xrootd-tpc/xrootd-tpc-http/k8s/tpc-xrootd.yaml;
+kubectl create -f /home/aaarora/xrootd-tpc/xrootd-tpc-https/k8s/tpc-xrootd.yaml;
 
 # Wait for ContainerCreating to Finish
 sleep 120;
@@ -15,7 +15,7 @@ kubectl exec $master -n osg-services /home/calcTransferRate.py;
 kubectl exec $master -n osg-services /home/send_to_maddash.py; 
 
 # Delete Daemonset after transfers complete.
-kubectl delete -f /home/aaarora/xrootd-tpc/xrootd-tpc-http/k8s/tpc-xrootd.yaml;
+kubectl delete -f /home/aaarora/xrootd-tpc/xrootd-tpc-https/k8s/tpc-xrootd.yaml;
 
 # Wait for Pods to finish terminating
 sleep 60;
@@ -36,3 +36,7 @@ kubectl exec $master -n osg-services /home/send_to_maddash.py;
 
 # Delete Daemonset after transfers complete.
 kubectl delete -f /home/aaarora/xrootd-tpc/gridftp-tpc/k8s/tpc-gridftp.yaml;
+
+## Clear mail
+
+> /var/spool/mail/aaarora

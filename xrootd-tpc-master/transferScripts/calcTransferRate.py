@@ -17,12 +17,12 @@ def calcRate():
 def makeTransferScript(source, destination, numTransfers):
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 10\" -H \"Source: http://{0}:8080/testSourceFile\" http://{1}:8080/testDestinationFile{2} --capath /etc/grid-security/certificates/ & PID{2}=$!\n'.format(source, destination,str(i+1))
+        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 8\" -H \"Source: http://{0}:8080/testSourceFile\" http://{1}:8080/testDestinationFile{2} --capath /etc/grid-security/certificates/ & PID{2}=$!\n'.format(source, destination,str(i+1))
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):
         command += 'wait $PID{0}\n'.format(str(i+1))
-    f = open('transferScript.sh', 'w')
+    f = open('/home/transferScript.sh', 'w')
     f.write(command)
     f.close()
 
@@ -30,7 +30,7 @@ def makeDeleteScript(destination, numTransfers):
     deleteCommand = ''
     for i in range(numTransfers):
         deleteCommand += 'curl -X DELETE http://{0}:8080/testDestinationFile{1} --capath /etc/grid-security/certificates/ \n'.format(destination, i+1)
-    f = open('deleteScript.sh', 'w')
+    f = open('/home/deleteScript.sh', 'w')
     f.write(deleteCommand)
     f.close()
 
@@ -51,17 +51,20 @@ def doTransfer(source, destination, numTransfers):
         s_source.close()
         s_dest.close()
         return 0 
-    p = subprocess.Popen(['bash','transferScript.sh'])
+    p = subprocess.Popen(['bash','/home/transferScript.sh'])
     try:
         p.wait(8)
-        rate = calcRate()
     except subprocess.TimeoutExpired:
         p.kill()
-    q = subprocess.Popen(['bash','deleteScript.sh'])
+    q = subprocess.Popen(['bash','/home/deleteScript.sh'])
     try:
-        q.wait(8)
+        q.wait(4)
     except subprocess.TimeoutExpired:
         q.kill()
+    try: 
+        rate = calcRate()
+    except:
+        rate = 0
     finally:
         s_source.close()
         s_dest.close()

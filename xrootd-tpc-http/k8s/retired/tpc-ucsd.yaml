@@ -27,13 +27,13 @@ spec:
       containers:
       - env:
         - name: XRDHTTPPORT
-          value: "8080"
+          value: "9000"
         - name: SITENAME
           value: EdgarSite
         image: aaarora/xrootd-tpc-http:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 9000
         lifecycle:
           postStart:
             exec:
@@ -42,10 +42,10 @@ spec:
         resources:
           limits:
             cpu: 6
-            memory: 50Gi
+            memory: 10Gi
           requests:
             cpu: 4
-            memory: 40Gi
+            memory: 5Gi
         volumeMounts:
         - mountPath: /etc/xrootd/xrootd-third-party-copy.cfg
           name: xrootd-tpc-conf
@@ -69,7 +69,7 @@ spec:
       - name: cache-vol-1
         emptyDir: 
           medium: Memory
-          sizeLimit: 80Gi 
+          sizeLimit: 1Gi 
       - name: cache-vol-2
         emptyDir: 
           medium: Memory
