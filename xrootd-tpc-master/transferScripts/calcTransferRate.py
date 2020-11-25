@@ -17,7 +17,7 @@ def calcRate():
 def makeTransferScript(source, destination, numTransfers):
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 8\" -H \"Source: http://{0}:8080/testSourceFile\" http://{1}:8080/testDestinationFile{2} --capath /etc/grid-security/certificates/ & PID{2}=$!\n'.format(source, destination,str(i+1))
+        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 8\" -H \"Source: https://{0}:8080/testSourceFile\" https://{1}:8080/testDestinationFile{2} --capath /etc/grid-security/certificates/ & PID{2}=$!\n'.format(source, destination,str(i+1))
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):
@@ -26,21 +26,12 @@ def makeTransferScript(source, destination, numTransfers):
     f.write(command)
     f.close()
 
-def makeDeleteScript(destination, numTransfers):
-    deleteCommand = ''
-    for i in range(numTransfers):
-        deleteCommand += 'curl -X DELETE http://{0}:8080/testDestinationFile{1} --capath /etc/grid-security/certificates/ \n'.format(destination, i+1)
-    f = open('/home/deleteScript.sh', 'w')
-    f.write(deleteCommand)
-    f.close()
-
 def doTransfer(source, destination, numTransfers):
 
     s_source = socket.socket()
     s_dest = socket.socket()
 
     makeTransferScript(source, destination, numTransfers)
-    makeDeleteScript(destination, numTransfers)
 
     rate = 0
     try:
@@ -56,11 +47,6 @@ def doTransfer(source, destination, numTransfers):
         p.wait(8)
     except subprocess.TimeoutExpired:
         p.kill()
-    q = subprocess.Popen(['bash','/home/deleteScript.sh'])
-    try:
-        q.wait(4)
-    except subprocess.TimeoutExpired:
-        q.kill()
     try: 
         rate = calcRate()
     except:

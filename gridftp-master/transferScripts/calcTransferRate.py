@@ -17,7 +17,7 @@ def calcRate():
 def makeTransferScript(source, destination, numTransfers):
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time globus-url-copy -v -ss \"/DC=org/DC=opensciencegrid/O=OSG Software/OU=Services/CN={0}\" -ds \"/DC=org/DC=opensciencegrid/O=OSG Software/OU=Services/CN={1}\" -p 8 gsiftp://{0}:9001/mnt/ramdisk/testSourceFile gsiftp://{1}:9001/mnt/ramdisk/testDestFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
+        command += 'time globus-url-copy -v -ss \"/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN={0}\" -ds \"/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN={1}\" -p 8 gsiftp://{0}:9001/mnt/ramdisk/testSourceFile gsiftp://{1}:9001/mnt/ramdisk/testDestFile{2} & PID{2}=$!\n'.format(source, destination,i+1)
     command += '} 2> /home/scriptFile.txt\n'
 
     for i in range(numTransfers):

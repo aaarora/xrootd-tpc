@@ -8,5 +8,5 @@ cagen-conf:
 
 ca-secret:
 	kubectl delete secret https-self-certs -n osg-services
-	kubectl create secret generic https-self-certs --from-file=~/openssl_gencerts/OSG-Test-CA.pem -n osg-services
+	kubectl create secret generic https-self-certs --from-file=/home/aaarora/openssl_gencerts/OSG-Test-CA.pem -n osg-services
 
