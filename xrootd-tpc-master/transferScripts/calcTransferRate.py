@@ -6,10 +6,17 @@ import subprocess
 
 def calcRate():
     arr = list()
-    f = open("/home/scriptFile.txt", "r")
-    for line in f:
-        if 'real' in line:
-            arr.append(float(line.split('\t')[1][2:7]))
+    with open("/home/scriptFile.txt", "r") as f:
+        for line in f:
+            if 'real' in line:
+                try:
+                    val = float(line.split('\t')[1][2:7])
+                except:
+                    continue
+                if (val < 1.0):
+                    continue
+                else:
+                    arr.append(val)
     f.close()
     rate = 8589934592.0 * 1.0 * len(arr) * len(arr) / sum(arr)
     return rate
@@ -22,8 +29,8 @@ def makeTransferScript(source, destination, numTransfers):
 
     for i in range(numTransfers):
         command += 'wait $PID{0}\n'.format(str(i+1))
-    f = open('/home/transferScript.sh', 'w')
-    f.write(command)
+    with open('/home/transferScript.sh', 'w') as f:
+        f.write(command)
     f.close()
 
 def doTransfer(source, destination, numTransfers):
@@ -56,15 +63,15 @@ def doTransfer(source, destination, numTransfers):
         s_dest.close()
     return rate
 
-def main():
+if __name__ == '__main__':
     conf = "/home/conf.json"
     rateDict = dict()
     with open(conf) as f:
-	    conf = json.load(f)
+	    config = json.loads(f.read())
     f.close()
     
-    for (sourceName, sourceIP) in conf.items():
-        for (destName, destIP) in conf.items():
+    for (sourceName, sourceIP) in config.items():
+        for (destName, destIP) in config.items():
             if sourceName is not destName:
                 rate = doTransfer(sourceName, destName, 11)
                 if rate is not 0:
@@ -73,6 +80,3 @@ def main():
     with open('/home/rates.json','w') as out:
         json.dump(rateDict,out)
     out.close()
-            
-if __name__ == '__main__':
-    main()
