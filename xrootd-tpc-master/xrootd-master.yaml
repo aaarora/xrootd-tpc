@@ -34,8 +34,10 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "osg-ca-generator --host"]       
+              command: ["/bin/sh", "-c", "osg-ca-generator --host"]
         env:
+        - name: TIMEFORMAT
+          value: "%3R"
         - name: OSG_FQDN
           valueFrom:
             fieldRef:

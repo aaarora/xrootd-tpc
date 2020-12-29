@@ -11,8 +11,8 @@ sleep 120;
 master=$(kubectl get pods -l k8s-app=xrootd-tpc-master -n osg-services -o jsonpath="{.items[0].metadata.name}")
 
 # Run Transfer Scripts from within master (for TPC on internal IPs)
-kubectl exec $master -n osg-services /home/calcTransferRate.py;
-kubectl exec $master -n osg-services /home/send_to_maddash.py; 
+kubectl exec $master -n osg-services -- /home/calcTransferRate.py;
+kubectl exec $master -n osg-services -- /home/send_to_maddash.py; 
 
 # Wait for Pods to finish terminating
 sleep 60;
@@ -22,8 +22,8 @@ sleep 60;
 master=$(kubectl get pods -l k8s-app=xrootd-tpc-master-single-stream -n osg-services -o jsonpath="{.items[0].metadata.name}")
 
 # Run Transfer Scripts from within master (for TPC on internal IPs)
-kubectl exec $master -n osg-services /home/calcTransferRate.py;
-kubectl exec $master -n osg-services /home/send_to_maddash.py; 
+kubectl exec $master -n osg-services -- /home/calcTransferRate.py;
+kubectl exec $master -n osg-services -- /home/send_to_maddash.py; 
 
 # Delete Daemonset after transfers complete.
 kubectl delete -f /home/aaarora/xrootd-tpc/xrootd-tpc-https/k8s/tpc-xrootd.yaml;
@@ -42,19 +42,19 @@ sleep 120;
 master=$(kubectl get pods -l k8s-app=gridftp-master -n osg-services -o jsonpath="{.items[0].metadata.name}")
 
 # Run Transfer Scripts from within master (for TPC on internal IPs)
-kubectl exec $master -n osg-services /home/calcTransferRate.py;
-kubectl exec $master -n osg-services /home/send_to_maddash.py;
+kubectl exec $master -n osg-services -- /home/calcTransferRate.py;
+kubectl exec $master -n osg-services -- /home/send_to_maddash.py;
 
 # Wait for Pods to finish terminating
-sleep 60;
+#sleep 60;
 
 ## GridFTP Single Stream
 
 master=$(kubectl get pods -l k8s-app=gridftp-master-single-stream -n osg-services -o jsonpath="{.items[0].metadata.name}")
 
 # Run Transfer Scripts from within master (for TPC on internal IPs)
-kubectl exec $master -n osg-services /home/calcTransferRate.py;
-kubectl exec $master -n osg-services /home/send_to_maddash.py;
+kubectl exec $master -n osg-services -- /home/calcTransferRate.py;
+kubectl exec $master -n osg-services -- /home/send_to_maddash.py;
 
 # Delete Daemonset after transfers complete.
 kubectl delete -f /home/aaarora/xrootd-tpc/gridftp-tpc/k8s/tpc-gridftp.yaml;
@@ -63,5 +63,4 @@ kubectl delete -f /home/aaarora/xrootd-tpc/gridftp-tpc/k8s/tpc-gridftp.yaml;
 sleep 60;
 
 ## Clear mail
-
 > /var/spool/mail/aaarora
