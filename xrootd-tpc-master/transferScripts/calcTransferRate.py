@@ -21,7 +21,7 @@ def calcRate():
 def makeTransferScript(source, destination, numTransfers):
     command = '{\n'
     for i in range(numTransfers):
-        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 8\" -H \"Source: http://{0}:8080/testSourceFile\" https://{1}:8080/testDestinationFile{2} --capath /etc/grid-security/certificates/ & PID{2}=$!\n'.format(source, destination,str(i+1))
+        command += 'time curl -X COPY -H \"Overwrite: T\" -H \"X-Number-Of-Streams: 8\" -H \"Source: https://{0}:8080/testSourceFile\" https://{1}:8080/testDestinationFile{2} --capath /etc/grid-security/certificates/ & PID{2}=$!\n'.format(source, destination,str(i+1))
     command += '} 2> /home/scriptFile.txt\n'
     for i in range(numTransfers):
         command += 'wait $PID{0}\n'.format(str(i+1))
