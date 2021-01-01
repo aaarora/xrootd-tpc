@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+import os
+import sys
+import json
+import socket
+
+def calcRate(fileSize): 
+    arr = list()
+    with open("/home/TimeLog.txt", "r") as f:
+        for line in f:
+            try:
+                if (float(line) < 2.0):
+                    continue
+                arr.append(float(line))
+            except:
+                continue
+    f.close()
+    rate = 8589934592.0 * fileSize * len(arr) * len(arr) / sum(arr)
+    return rate
+
+def doTransfer(protocol, numStreams, source, destination, numTransfers):
+    source_socket = socket.socket()
+    dest_socket = socket.socket()
+    rate = 0
+    try:
+        source_socket.connect((source, 8080))
+        dest_socket.connect((destination, 8080))
+        os.system(f"/home/doTransfer {protocol} {numStreams} {source} {destination} {numTransfers}")
+        os.system("sleep 2")
+        rate = calcRate(1.0)
+    except Exception as e: 
+        source_socket.close()
+        dest_socket.close()
+        return 0 
+    finally:
+        source_socket.close()
+        dest_socket.close()
+    return rate
+
+if __name__ == '__main__':
+    conf = "/home/conf.json"
+    rateDict = dict()
+    with open(conf) as f:
+	    config = json.loads(f.read())
+    f.close()
+
+    with open('/home/TPCLog.json','w') as out:
+        for (sourceName, sourceIP) in config.items():
+            for (destName, destIP) in config.items():
+                if sourceName is not destName:
+                    rate = doTransfer(sys.argv[1], sys.argv[2], sourceName, destName, 11)
+                    if rate is not 0:
+                        out.write(json.dumps({"{0}~{1}~{2}~{3}".format(sourceName,sourceIP,destName,destIP) : round(rate)}))
+                        out.write('\n')
+    out.close()

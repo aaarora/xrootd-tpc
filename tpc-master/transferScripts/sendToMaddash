@@ -1,0 +1,50 @@
+#!/usr/bin/python3
+
+import requests
+import json
+import sys
+import time
+
+if sys.argv[1] == 'HTTPS':
+    toolName = 'xrootd-tpc-single-stream' if int(sys.argv[2]) == 1 else 'xrootd-tpc'
+elif sys.argv[1] == 'GridFTP':
+    toolName = 'gridftp-tpc-single-stream' if int(sys.argv[2]) == 1 else 'gridftp-tpc'
+
+with open('/home/maddash_conf.json') as maddash_conf:
+    conf = json.load(maddash_conf)
+maddash_conf.close()
+
+url = conf['url']
+key = conf['key']
+headers = conf['headers']
+
+dataList = []
+with open('/home/TPCLog.json') as f:
+    for line in f:
+        dataList.append(line)
+f.close()
+
+for item in dataList:
+    for hosts, rate in json.loads(item).items():
+        host_str = hosts.split('~')
+        payload = {
+            "subject-type": "point-to-point",
+            "source": host_str[1],
+            "destination": host_str[3],
+            "tool-name": toolName,
+            "measurement-agent": host_str[1],
+            "input-source": host_str[0],
+            "input-destination": host_str[2],
+            "event-types": [{"event-type": "throughput","summaries":[{"summary-type": "aggregation","summary-window": 3600},{"summary-type": "aggregation","summary-window": 86400}]}]
+        }
+
+        m = requests.post(url, data=json.dumps(payload), headers=headers)
+
+        returnJSON = m.json()
+        metadataKey = returnJSON['metadata-key']
+
+        dat = {
+            "ts": int(time.time()),
+            "val": rate
+        }
+        d = requests.post("{0}{1}/throughput/base".format(url,metadataKey), data=json.dumps(dat), headers=headers)

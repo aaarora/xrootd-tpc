@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: gridftp-master-single-stream
-  name: gridftp-master-single-stream
+    k8s-app: tpc-master
+  name: tpc-master
   namespace: osg-services
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: gridftp-master-single-stream
+      k8s-app: tpc-master
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -19,7 +19,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        k8s-app: gridftp-master-single-stream
+        k8s-app: tpc-master
     spec:
       tolerations:
       - effect: NoSchedule
@@ -30,10 +30,11 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        name: tpc-master
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "osg-ca-generator --host"]       
+              command: ["/bin/sh", "-c", "osg-ca-generator --host"]
         env:
         - name: TIMEFORMAT
           value: "%3R"
@@ -41,7 +42,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        name: gridftp-master-single-stream
         resources:
           limits:
             cpu: 4
@@ -59,20 +59,32 @@ spec:
           name: ca
           subPath: OSG-Test-CA.pem
         - mountPath: /home/conf.json
-          name: transfer-script
+          name: tpc-script
           subPath: conf.json
           readOnly: false
-        - mountPath: /home/calcTransferRate.py
-          name: transfer-script
-          subPath: calcTransferRate.py 
+        - mountPath: /home/calcTransferRate
+          name: tpc-script
+          subPath: calcTransferRate 
           readOnly: false 
         - mountPath: /home/maddash_conf.json
-          name: transfer-script
+          name: tpc-script
           subPath: maddash_conf.json 
           readOnly: false
-        - mountPath: /home/send_to_maddash.py
-          name: transfer-script
-          subPath: send_to_maddash.py
+        - mountPath: /home/sendToMaddash
+          name: tpc-script
+          subPath: sendToMaddash
+          readOnly: false 
+        - mountPath: /home/https-cron
+          name: tpc-script
+          subPath: https-cron
+          readOnly: false 
+        - mountPath: /home/gftp-cron
+          name: tpc-script
+          subPath: gftp-cron
+          readOnly: false 
+        - mountPath: /home/doTransfer
+          name: tpc-script
+          subPath: doTransfer
           readOnly: false 
       dnsPolicy: ClusterFirst
       restartPolicy: Always
@@ -93,16 +105,22 @@ spec:
           defaultMode: 0644
       - name: cache-vol
         emptyDir: {}
-      - name: transfer-script
+      - name: tpc-script
         configMap: 
-          name: gridftp-transfer-script-single-stream 
+          name: tpc-script
           items:
           - key: conf.json
             path: conf.json
-          - key: calcTransferRate.py
-            path: calcTransferRate.py
+          - key: calcTransferRate
+            path: calcTransferRate
           - key: maddash_conf.json
             path: maddash_conf.json
-          - key: send_to_maddash.py
-            path: send_to_maddash.py
+          - key: sendToMaddash
+            path: sendToMaddash
+          - key: doTransfer
+            path: doTransfer
+          - key: https-cron
+            path: https-cron
+          - key: gftp-cron
+            path: gftp-cron
           defaultMode: 0777

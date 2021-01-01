@@ -1,0 +1,12 @@
+#!/bin/bash
+TIMEFORMAT=%R
+PID=()
+for i in $(seq 1 $1)
+do	
+	time cp ramdisk/testSourceFile ramdisk2/testFile$i & PID[$i]=$!
+done;
+
+for i in $(seq 1 $1)
+do
+	wait ${PID[$i]}
+done;
