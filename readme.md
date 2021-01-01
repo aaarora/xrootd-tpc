@@ -4,6 +4,6 @@ This project seeks to measure the actual server to server performance of HTTPS u
 
 #### Third Party Copy
 
-![TPC](/misc/images/TPC.jpg)
+![TPC](/images/TPC.jpg)
 
 Third Party Copy (TPC) refers to the file transfer mechanism where a client transfers files between a source and destination server by issuing a COPY request to either of the endpoints after which, only the servers communicate with one another.
