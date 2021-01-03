@@ -5,7 +5,7 @@ master=$(kubectl get pods -l k8s-app=tpc-master -n osg-services -o jsonpath="{.i
 ## XRootD
 
 # Create DaemonSet
-kubectl create -f /home/aaarora/xrootd-tpc/xrootd-tpc-https/k8s/tpc-xrootd.yaml;
+kubectl create -f /home/aaarora/xrootd-tpc/https-tpc/k8s/tpc-xrootd.yaml;
 
 # Wait for ContainerCreating to Finish
 sleep 120;

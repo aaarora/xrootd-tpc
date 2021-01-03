@@ -11,7 +11,7 @@ function HTTPSTransfer {
 }
 
 function GridFTPTransfer {
-    globus-url-copy -v -p $1 \
+    time globus-url-copy -v -p $1 \
     -ss "/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN=$2" \
     -ds "/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN=$3" \
     gsiftp://$2:9001/mnt/ramdisk/testSourceFile \

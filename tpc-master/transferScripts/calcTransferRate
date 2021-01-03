@@ -19,12 +19,13 @@ def calcRate(fileSize):
     return rate
 
 def doTransfer(protocol, numStreams, source, destination, numTransfers):
+    port = 8080 if protocol is 'HTTPS' else 9001
     source_socket = socket.socket()
     dest_socket = socket.socket()
     rate = 0
     try:
-        source_socket.connect((source, 8080))
-        dest_socket.connect((destination, 8080))
+        source_socket.connect((source, port))
+        dest_socket.connect((destination, port))
         os.system(f"/home/doTransfer {protocol} {numStreams} {source} {destination} {numTransfers}")
         os.system("sleep 2")
         rate = calcRate(1.0)
