@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Args: 1 NumStreams, 2 Source, 3 Dest, 4 NumTransfers
+function HTTPSTransfer {
+    time curl -X COPY \
+    -H "Overwrite: T" \
+    -H "X-Number-Of-Streams: $1" \
+    -H "Source: https://$2:8080/testSourceFile" \
+    https://$3:8080/testDestinationFile$4 \
+    --capath /etc/grid-security/certificates/ &> /dev/null
+}
+
+function GridFTPTransfer {
+    time globus-url-copy -v -p $1 \
+    -ss "/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN=$2" \
+    -ds "/DC=org/DC=opensciencegrid/C=US/O=OSG Software/OU=Services/CN=$3" \
+    gsiftp://$2:9001/mnt/ramdisk/testSourceFile \
+    gsiftp://$3:9001/mnt/ramdisk/testDestinationFile$4 &> /dev/null
+}
+
+function XRootDTransfer {
+    time xrdcp -f -S $1 \
+    root://$2:8080//testSourceFile \
+    root://$3:8080//testDestinationFile$4 &> /dev/null
+}
+
+# Args: 1 Protocol, 2 NumStreams, 3 Source, 4 Dest, 5 NumTransfers
+function doTransfer {
+    PID=()
+    for i in $(seq 1 $5)
+    do
+        if [ $1 == 'HTTPS' ]; then
+        HTTPSTransfer $2 $3 $4 $i & PID[$i]=$!
+        fi
+
+        if [ $1 == 'GridFTP' ]; then
+        GridFTPTransfer $2 $3 $4 $i & PID[$i]=$!
+        fi
+
+        if [ $1 == 'XRootD' ]; then
+        XRootDTransfer $2 $3 $4 $i & PID[$i]=$!
+        fi
+    done;
+    for i in $(seq 1 $5)
+    do
+        wait ${PID[$i]};
+    done;
+}
+
+doTransfer $1 $2 $3 $4 $5 2> /home/TimeLog.txt

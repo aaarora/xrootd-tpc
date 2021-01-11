@@ -1,0 +1,40 @@
+#!/bin/bash
+
+master=$(kubectl get pods -l k8s-app=tpc-master -n osg-services -o jsonpath="{.items[0].metadata.name}")
+
+## XRootD
+
+# Create DaemonSet
+kubectl create -f /home/aaarora/tpc-benchmark/https-tpc/k8s/tpc-xrootd.yaml;
+
+# Wait for ContainerCreating to Finish
+sleep 120;
+
+# Run Transfer Scripts from within master (for TPC on internal IPs)
+kubectl exec $master -n osg-services -- /home/https-cron
+
+# Delete Pods
+kubectl delete -f /home/aaarora/tpc-benchmark/https-tpc/k8s/tpc-xrootd.yaml;
+
+# Wait for Pods to finish terminating
+sleep 120;
+
+## GridFTP
+
+# Create DaemonSet
+kubectl create -f /home/aaarora/tpc-benchmark/gridftp-tpc/k8s/tpc-gridftp.yaml;
+
+# Wait for ContainerCreating to Finish
+sleep 120;
+
+# Run Transfer Scripts from within master (for TPC on internal IPs)
+kubectl exec $master -n osg-services -- /home/gftp-cron
+
+# Delete Pods
+kubectl delete -f /home/aaarora/tpc-benchmark/gridftp-tpc/k8s/tpc-gridftp.yaml;
+
+# Wait for Pods to finish terminating
+sleep 120;
+
+## Clear mail
+> /var/spool/mail/aaarora

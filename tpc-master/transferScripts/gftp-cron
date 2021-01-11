@@ -1,0 +1,13 @@
+#!/bin/bash
+
+## GridFTP Multi Stream
+
+/home/calcTransferRate 'GridFTP' 8
+/home/sendToMaddash 'GridFTP' 8
+
+sleep 120;
+
+## GridFTP Single Stream
+
+/home/calcTransferRate 'GridFTP' 1
+/home/sendToMaddash 'GridFTP' 1
