@@ -15,8 +15,10 @@ spec:
         k8s-app: tpc-gridftp
     spec:
       tolerations:
-      - effect: NoSchedule
-        operator: Exists
+      - key: "node.kubernetes.io/unschedulable"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 100
       containers:
       - env:
         - name: OSG_FQDN

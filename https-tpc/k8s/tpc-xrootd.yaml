@@ -15,8 +15,9 @@ spec:
         k8s-app: tpc-xrootd
     spec:
       tolerations:
-      - effect: NoSchedule
-        operator: Exists
+      - key: "nautilus.io/testing" 
+        operator: "Exists"
+        effect: "NoSchedule"
       containers:
       - env:
         - name: OSG_FQDN
