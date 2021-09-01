@@ -29,5 +29,5 @@ jobs:
       with:
         push: true
         context: https-tpc/
-        file: Dockerfile
+        file: https-tpc/Dockerfile
         tags: aaarora/xrootd-tpc-https:latest

@@ -29,5 +29,5 @@ jobs:
       with:
         push: true
         context: maddash/
-        file: Dockerfile
+        file: maddash/Dockerfile
         tags: aaarora/maddash:latest

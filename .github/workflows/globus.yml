@@ -29,5 +29,5 @@ jobs:
       with:
         push: true
         context: gridftp-tpc/
-        file: Dockerfile
+        file: gridftp-tpc/Dockerfile
         tags: aaarora/gridftp-tpc:latest
