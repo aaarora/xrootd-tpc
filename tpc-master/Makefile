@@ -1,15 +1,5 @@
-conf:
-	-kubectl delete configmap tpc-script -n osg-services
-	-kubectl create configmap tpc-script -n osg-services \
-	--from-file=transferScripts/gftp-cron \
-	--from-file=transferScripts/https-cron \
-	--from-file=transferScripts/xrootd-cron \
-	--from-file=transferScripts/doTransfer \
-	--from-file=transferScripts/maddash_conf.json \
-	--from-file=transferScripts/conf.json \
-	--from-file=transferScripts/calcTransferRate \
-	--from-file=transferScripts/sendToMaddash
-
-container:
-	-kubectl delete -f tpc-master.yaml
-	-kubectl create -f tpc-master.yaml
+delete:
+	- kubectl delete -k ./
+create:
+	- kubectl apply -k ./
+	- kubectl cp tpc $(shell kubectl get pods -l k8s-app=tpc-master -n osg-services -o jsonpath="{.items[0].metadata.name}"):/home/ -n osg-services

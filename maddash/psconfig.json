@@ -1,0 +1,97 @@
+{
+    "addresses": {
+        "k8s-igrok-02.calit2.optiputer.net": {"address": "k8s-igrok-02.calit2.optiputer.net"},
+        "k8s-igrok-03.calit2.optiputer.net": {"address": "k8s-igrok-03.calit2.optiputer.net"},
+        "maserati.sciencedmz.nps.edu": {"address": "maserati.sciencedmz.nps.edu"},
+        "osg.chic.nrp.internet2.edu": {"address": "osg.chic.nrp.internet2.edu"},
+        "k8s-igrok-05.calit2.optiputer.net": {"address": "k8s-igrok-05.calit2.optiputer.net"},
+        "k8s-gen4-02.calit2.optiputer.net": {"address": "k8s-gen4-02.calit2.optiputer.net"},
+        "nrp-s1.nysernet.org": {"address": "nrp-s1.nysernet.org"},
+        "k8s-igrok-01.calit2.optiputer.net": {"address": "k8s-igrok-01.calit2.optiputer.net"},
+        "k8s-nvme-01.sdsc.optiputer.net": {"address": "k8s-nvme-01.sdsc.optiputer.net"},
+        "k8s-gpu-03.sdsc.optiputer.net": {"address": "k8s-gpu-03.sdsc.optiputer.net"},
+        "k8s-nvme-01.ultralight.org": {"address": "k8s-nvme-01.ultralight.org"},
+        "siderea.ucsc.edu": {"address": "siderea.ucsc.edu.ucsc.edu"},
+        "osg.newy32aoa.nrp.internet2.edu": {"address": "osg.newy32aoa.nrp.internet2.edu"},
+        "k8s-gen4-06.calit2.optiputer.net": {"address": "k8s-gen4-06.calit2.optiputer.net"},
+        "k8s-gen4-07.calit2.optiputer.net": {"address": "k8s-gen4-07.calit2.optiputer.net"},
+        "k8s-gen4-08.calit2.optiputer.net": {"address": "k8s-gen4-08.calit2.optiputer.net"},
+        "k8s-u280-01.calit2.optiputer.net": {"address": "k8s-u280-01.calit2.optiputer.net"},
+        "k8s-gen4-01.calit2.optiputer.net": {"address": "k8s-gen4-01.calit2.optiputer.net"},
+        "uqucsdedgefs.aiq.dc.uq.edu.au": {"address": "uqucsdedgefs.aiq.dc.uq.edu.au"},
+        "osg.kans.nrp.internet2.edu": {"address": "osg.kans.nrp.internet2.edu"},
+        "k8s-igrok-06.calit2.optiputer.net": {"address": "k8s-igrok-06.calit2.optiputer.net"},
+        "k8s-igrok-04.calit2.optiputer.net": {"address": "k8s-igrok-04.calit2.optiputer.net"},
+        "stashcache.t2.ucsd.edu": {"address": "stashcache.t2.ucsd.edu"},
+        "k8s-epyc-01.sdsc.optiputer.net": {"address": "k8s-epyc-01.sdsc.optiputer.net"},
+        "ps-100g.sdsu.edu": {"address": "ps-100g.sdsu.edu"},
+        "k8s-igrok-07.calit2.optiputer.net": {"address": "k8s-igrok-07.calit2.optiputer.net"}
+    },
+    "groups": {
+        "throughput_group": {
+            "type": "mesh",
+            "addresses": [
+                {"name": "k8s-igrok-02.calit2.optiputer.net"},
+                {"name": "k8s-igrok-03.calit2.optiputer.net"},
+                {"name": "maserati.sciencedmz.nps.edu"},
+                {"name": "osg.chic.nrp.internet2.edu"},
+                {"name": "k8s-igrok-05.calit2.optiputer.net"},
+                {"name": "k8s-gen4-02.calit2.optiputer.net"},
+                {"name": "nrp-s1.nysernet.org"},
+                {"name": "k8s-igrok-01.calit2.optiputer.net"},
+                {"name": "k8s-nvme-01.sdsc.optiputer.net"},
+                {"name": "k8s-gpu-03.sdsc.optiputer.net"},
+                {"name": "k8s-nvme-01.ultralight.org"},
+                {"name": "siderea.ucsc.edu"},
+                {"name": "osg.newy32aoa.nrp.internet2.edu"},
+                {"name": "k8s-gen4-06.calit2.optiputer.net"},
+                {"name": "k8s-gen4-07.calit2.optiputer.net"},
+                {"name": "k8s-gen4-08.calit2.optiputer.net"},
+                {"name": "k8s-u280-01.calit2.optiputer.net"},
+                {"name": "k8s-gen4-01.calit2.optiputer.net"},
+                {"name": "uqucsdedgefs.aiq.dc.uq.edu.au"},
+                {"name": "osg.kans.nrp.internet2.edu"},
+                {"name": "k8s-igrok-06.calit2.optiputer.net"},
+                {"name": "k8s-igrok-04.calit2.optiputer.net"},
+                {"name": "stashcache.t2.ucsd.edu"},
+                {"name": "k8s-epyc-01.sdsc.optiputer.net"},
+                {"name": "ps-100g.sdsu.edu"},
+                {"name": "k8s-igrok-07.calit2.optiputer.net"}
+            ]
+        }
+    },
+    "tests": {
+        "throughput_test": {
+            "type": "throughput",
+            "spec": {
+                "source": "{% address[0] %}",
+                "dest": "{% address[1] %}",
+                "duration": "PT30S"
+            }
+        }
+    },
+    "archives": {
+        "esmond_archive": {
+            "archiver": "esmond",
+            "data": {
+                "url": "https://perfsonar.nautilus.optiputer.net/esmond/perfsonar/archive/",
+                "measurement-agent": "{% scheduled_by_address %}"
+            }
+        }
+    },
+    "schedules": {
+        "every_4_hours": {
+             "repeat": "PT4H",
+             "slip": "PT4H",
+             "sliprand": true
+         }
+     },
+     "tasks": {
+        "throughput_task": {
+            "group": "throughput_group",
+            "test": "throughput_test",
+            "archives": ["esmond_archive"],
+            "schedule": "every_4_hours"
+        }
+    }
+}

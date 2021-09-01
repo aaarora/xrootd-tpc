@@ -15,10 +15,18 @@ spec:
         k8s-app: tpc-gridftp
     spec:
       tolerations:
-      - key: "node.kubernetes.io/unschedulable"
+      - key: "nautilus.io/noceph" 
         operator: "Exists"
-        effect: "NoExecute"
-        tolerationSeconds: 100
+        effect: "NoSchedule"
+      - key: "nautilus.io/ceph" 
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "nautilus.io/testing" 
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "nautilus.io/stashcache" 
+        operator: "Exists"
+        effect: "NoSchedule"
       containers:
       - env:
         - name: OSG_FQDN
@@ -40,11 +48,11 @@ spec:
         resources:
           limits:
             cpu: "6" 
-            memory: 25Gi
+            memory: 15Gi
 #            ephemeral-storage: 40Gi
           requests:
             cpu: "4"
-            memory: 20Gi
+            memory: 14Gi
 #            ephemeral-storage: 30Gi
         volumeMounts:
         - mountPath: /etc/gridftp.conf
@@ -80,4 +88,4 @@ spec:
       - name: cache-vol
         emptyDir:
           medium: Memory
-          sizeLimit: 15Gi
+          sizeLimit: 12Gi

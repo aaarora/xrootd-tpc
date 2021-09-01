@@ -1,0 +1,8 @@
+resources:
+  - tpc-master.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+commonLabels:
+  app: tpc-master
