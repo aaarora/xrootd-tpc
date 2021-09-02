@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maddash-tpc
+  namespace: osg-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: maddash-tpc
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: maddash-tpc
+    spec:
+      containers:
+      - name: maddash-tpc
+        env:
+        - name: podPort
+          value: "80"
+        image: rygao7/maddash:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: 8Gi
+            cpu: 4
+          requests:
+            memory: 6Gi
+            cpu: 3
+      restartPolicy: Always

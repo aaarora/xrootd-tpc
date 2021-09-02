@@ -1,0 +1,21 @@
+resources:
+  - k8s/tpc-gridftp.yaml
+
+configMapGenerator:
+  - name: cagen-script-modified
+    files:
+      - /home/aaarora/osg-ca-generator/lib/cagen.py
+  - name: gridftp-tpc-conf
+    files: 
+      - gridftp.conf
+
+secretGenerator:
+- name: https-self-certs
+  files:
+    - /home/aaarora/openssl-gencerts/OSG-Test-CA.pem
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+commonLabels:
+  app: xrootd-tpc

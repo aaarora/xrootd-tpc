@@ -16,7 +16,7 @@ class MaddashClient:
       "subject-type": "point-to-point",
       "source": transferTest.sourceIP,
       "destination": transferTest.destinationIP,
-      "tool-name": transferTest.protocol,
+      "tool-name": 'xrootd-tpc-single-stream' if (transferTest.protocol == 'https') else 'gridftp-tpc-single-stream',
       "measurement-agent": transferTest.sourceIP,
       "input-source": transferTest.source,
       "input-destination": transferTest.destination,
@@ -32,5 +32,5 @@ class MaddashClient:
         "ts": int(time.time()),
         "val": rate
     }
-    status = requests.post("{0}{1}/throughput/base".format(url,metadataKey), json=json.dumps(dat), headers=headers)
-    logging.debug("Posted to database with status %s", status)
+    r = requests.post("{0}{1}/throughput/base".format(url,metadataKey), data=json.dumps(dat), headers=headers)
+    logging.debug("Posted to database with status %s", r.status_code)

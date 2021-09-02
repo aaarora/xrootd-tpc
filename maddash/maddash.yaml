@@ -4,33 +4,28 @@ http:
     port: 8881
 groups:
     hosts :
-      - "k8s-igrok-02.calit2.optiputer.net"
-      - "k8s-igrok-03.calit2.optiputer.net"
-      - "maserati.sciencedmz.nps.edu"
+      - "ps-100g-scidmz-0.tools.ucla.net"
+      - "k8s-usra-02.calit2.optiputer.net"
       - "osg.chic.nrp.internet2.edu"
       - "k8s-igrok-05.calit2.optiputer.net"
-      - "k8s-gen4-02.calit2.optiputer.net"
-      - "nrp-s1.nysernet.org"
-      - "k8s-igrok-01.calit2.optiputer.net"
+      - "sdsmt-fiona.sdsmt.edu"
       - "k8s-nvme-01.sdsc.optiputer.net"
-      - "k8s-gpu-03.sdsc.optiputer.net"
-      - "k8s-nvme-01.ultralight.org"
-      - "siderea.ucsc.edu"
       - "osg.newy32aoa.nrp.internet2.edu"
-      - "k8s-gen4-06.calit2.optiputer.net"
-      - "k8s-gen4-07.calit2.optiputer.net"
-      - "k8s-gen4-08.calit2.optiputer.net"
-      - "k8s-u280-01.calit2.optiputer.net"
-      - "k8s-gen4-01.calit2.optiputer.net"
-      - "uqucsdedgefs.aiq.dc.uq.edu.au"
-      - "osg.kans.nrp.internet2.edu"
-      - "k8s-igrok-06.calit2.optiputer.net"
       - "k8s-igrok-04.calit2.optiputer.net"
       - "stashcache.t2.ucsd.edu"
+      - "k8s-usra-01.calit2.optiputer.net"
+      - "dtn101.sl.startap.net"
       - "k8s-epyc-01.sdsc.optiputer.net"
+      - "k8s-igrok-02.calit2.optiputer.net"
+      - "k8s-igrok-03.calit2.optiputer.net"
+      - "fiona-100g.ucsc.edu"
+      - "nrp-s1.nysernet.org"
+      - "k8s-igrok-01.calit2.optiputer.net"
+      - "k8s-nvme-01.ultralight.org"
+      - "siderea.ucsc.edu"
+      - "osg.kans.nrp.internet2.edu"
       - "ps-100g.sdsu.edu"
-      - "k8s-igrok-07.calit2.optiputer.net"
-      - "ps-100g-scidmz-0.tools.ucla.net"
+      - "k8s-gen4-01.ampath.net" 
 groupMembers:
 
 checks:
@@ -43,7 +38,7 @@ checks:
             maUrl:
                 default: "https://perfsonar.nautilus.optiputer.net/esmond/perfsonar/archive/"
             graphUrl: "https://xrootd-tpc-maddash.nautilus.optiputer.net/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
-            command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w 30: -c 10: -r 86400 -s %row -d %col --tool xrootd-tpc"
+            command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w 30: -c 10: -r 86400 -s %row -d %col --tool xrootd-tpc-single-stream"
         checkInterval: 7200
         retryInterval: 300
         retryAttempts: 3
@@ -57,7 +52,7 @@ checks:
             maUrl:
                 default: "https://perfsonar.nautilus.optiputer.net/esmond/perfsonar/archive/"
             graphUrl: "https://xrootd-tpc-maddash.nautilus.optiputer.net/perfsonar-graphs/?url=%maUrl&dest=%col&source=%row"
-            command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w 30: -c 10: -r 86400 -s %row -d %col --tool gridftp-tpc"
+            command:  "/usr/lib64/nagios/plugins/check_throughput.pl -u %maUrl -w 30: -c 10: -r 86400 -s %row -d %col --tool gridftp-tpc-single-stream"
         checkInterval: 7200
         retryInterval: 300
         retryAttempts: 3

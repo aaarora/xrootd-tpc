@@ -49,11 +49,9 @@ spec:
           limits:
             cpu: "6" 
             memory: 15Gi
-#            ephemeral-storage: 40Gi
           requests:
             cpu: "4"
             memory: 14Gi
-#            ephemeral-storage: 30Gi
         volumeMounts:
         - mountPath: /etc/gridftp.conf
           name: gridftp-tpc-conf

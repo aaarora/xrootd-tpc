@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: maddash-service
+  namespace: osg-services
+spec:
+  selector:
+    k8s-app: maddash-tpc
+  type: ClusterIP
+  ports:
+  - name: web
+    port: 80
+    targetPort: 80
+    protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: maddash-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.tls: ""
+  namespace: osg-services
+spec:
+  rules:
+  - host: xrootd-tpc-maddash.nautilus.optiputer.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: maddash-service
+            port: 
+              number: 80
